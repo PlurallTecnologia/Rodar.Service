@@ -9,6 +9,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using System.Web.Script.Services;
 
 namespace Rodar.Service.Controllers
 {
@@ -18,7 +19,7 @@ namespace Rodar.Service.Controllers
 
         [HttpPost]
         [ActionName("Cadastrar")]
-        public int Cadastrar([System.Web.Http.FromBody] Usuario Usuario)
+        public HttpResponseMessage Cadastrar([System.Web.Http.FromBody] Usuario Usuario)
         {
             using (con)
             {
@@ -58,23 +59,23 @@ namespace Rodar.Service.Controllers
                 {
                     con.Open();
                     cmdInserir.ExecuteNonQuery();
-                    return (int)cmdInserir.Parameters["idUsuario"].Value;
+
+                    return Request.CreateResponse(HttpStatusCode.OK, (int)cmdInserir.Parameters["idUsuario"].Value);
                 }
                 catch (Exception Ex)
                 {
-                    throw new ApplicationException($"Erro ao inserir registro: {Ex.Message}");
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, Ex.Message);
                 }
                 finally
                 {
                     con.Close();
                 }
             }
-
         }
 
         [HttpPost]
         [ActionName("Atualizar")]
-        public void Atualizar([System.Web.Http.FromBody] Usuario Usuario)
+        public HttpResponseMessage Atualizar([System.Web.Http.FromBody] Usuario Usuario)
         {
             using (con)
             {
@@ -126,17 +127,18 @@ namespace Rodar.Service.Controllers
                 {
                     con.Open();
                     cmdAtualizar.ExecuteNonQuery();
+
+                    return Request.CreateResponse(HttpStatusCode.OK);
                 }
-                catch
+                catch (Exception Ex)
                 {
-                    throw new ApplicationException("Erro ao atualizar registro");
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, Ex.Message);
                 }
                 finally
                 {
                     con.Close();
                 }
             }
-
         }
 
         [HttpGet]
@@ -165,7 +167,7 @@ namespace Rodar.Service.Controllers
                 }
                 catch (Exception Ex)
                 {
-                    throw new ApplicationException($"Erro ao capturar registro: {Ex.Message}");
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, Ex.Message);
                 }
                 finally
                 {
@@ -173,16 +175,48 @@ namespace Rodar.Service.Controllers
                 }
             }
 
-            var serialized = JsonConvert.SerializeObject(usuario);
-            var deserialized = JsonConvert.DeserializeObject<Usuario>(serialized, new JsonSerializerSettings
-            {
-                NullValueHandling = NullValueHandling.Ignore, 
-            });
+            return Request.CreateResponse(HttpStatusCode.OK, usuario);
+        }
 
-            return new HttpResponseMessage()
+        [HttpGet]
+        [ActionName("BuscarTodos")]
+        [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
+        public HttpResponseMessage GetAll()
+        {
+            List<Usuario> usuarios = new List<Usuario>();
+
+            using (con)
             {
-                Content = new StringContent(serialized, System.Text.Encoding.UTF8, "application/json")
-            };
+                string stringSQL = @"SELECT *
+                                    FROM Usuario";
+
+                SqlCommand cmdSelecionar = new SqlCommand(stringSQL, con);
+
+                try
+                {
+                    con.Open();
+                    SqlDataReader drSelecao = cmdSelecionar.ExecuteReader();
+
+                    while (drSelecao.Read())
+                    {
+                        Usuario usuario = new Usuario();
+
+                        PreencheCampos(drSelecao, ref usuario);
+
+                        usuarios.Add(usuario);
+                    }
+                }
+                catch (Exception Ex)
+                {
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, Ex.Message);
+                }
+                finally
+                {
+                    con.Close();
+                }
+            }
+
+            return Request.CreateResponse(HttpStatusCode.OK, usuarios);
         }
 
         private static void PreencheCampos(SqlDataReader drSelecao, ref Usuario usuario)

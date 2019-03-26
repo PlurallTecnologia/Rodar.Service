@@ -64,7 +64,7 @@ namespace TestApi
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri("http://localhost:50081");
-                Usuario usuario = new Usuario { nomeCompleto = "Ana Paula", Email = "anapaulaludke@gmail.com", Senha = "654" };
+                Usuario usuario = new Usuario { nomeCompleto = "Teste Usuario", Email = "testeusuario@gmail.com", Senha = "abc" };
                 var response = client.PostAsJsonAsync("api/Usuario/Cadastrar", usuario).Result;
 
                 if (response.IsSuccessStatusCode)
