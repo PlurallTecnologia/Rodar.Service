@@ -141,7 +141,7 @@ namespace Rodar.Service.Controllers
 
         [HttpGet]
         [ActionName("Buscar")]
-        public string Get(int id)
+        public HttpResponseMessage Get(int id)
         {
             Usuario usuario = new Usuario();
 
@@ -176,10 +176,13 @@ namespace Rodar.Service.Controllers
             var serialized = JsonConvert.SerializeObject(usuario);
             var deserialized = JsonConvert.DeserializeObject<Usuario>(serialized, new JsonSerializerSettings
             {
-                NullValueHandling = NullValueHandling.Ignore
+                NullValueHandling = NullValueHandling.Ignore, 
             });
 
-            return serialized;
+            return new HttpResponseMessage()
+            {
+                Content = new StringContent(serialized, System.Text.Encoding.UTF8, "application/json")
+            };
         }
 
         private static void PreencheCampos(SqlDataReader drSelecao, ref Usuario usuario)

@@ -114,7 +114,7 @@ namespace TestApi
 
                 if (response.IsSuccessStatusCode)
                 {
-                    var retorno = response.Content.ReadAsStringAsync().Result.TrimStart('\"').TrimEnd('\"').Replace("\\", "");
+                    var retorno = response.Content.ReadAsStringAsync().Result;//.TrimStart('\"').TrimEnd('\"').Replace("\\", "");
 
                     var usuarioEncontrado = JsonConvert.DeserializeObject<Usuario>(retorno, new JsonSerializerSettings
                     {
