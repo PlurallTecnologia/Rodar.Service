@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27004.2002
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rodar.Service", "Rodar.Service\Rodar.Service.csproj", "{AC52013F-FCCB-4FE7-A743-F580BA3DAAB9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestApi", "TestApi\TestApi.csproj", "{CE09EFF5-D62E-43AB-A644-88D168C92217}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AC52013F-FCCB-4FE7-A743-F580BA3DAAB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC52013F-FCCB-4FE7-A743-F580BA3DAAB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC52013F-FCCB-4FE7-A743-F580BA3DAAB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC52013F-FCCB-4FE7-A743-F580BA3DAAB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE09EFF5-D62E-43AB-A644-88D168C92217}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE09EFF5-D62E-43AB-A644-88D168C92217}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE09EFF5-D62E-43AB-A644-88D168C92217}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE09EFF5-D62E-43AB-A644-88D168C92217}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {69DA873E-61D2-46E9-A8DB-9F07A0FA7C48}
+	EndGlobalSection
+EndGlobal
