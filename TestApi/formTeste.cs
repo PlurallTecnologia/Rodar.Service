@@ -20,6 +20,8 @@ namespace TestApi
 {
     public partial class formTeste : Form
     {
+        public Token Authentication;
+
         public formTeste()
         {
             InitializeComponent();
@@ -109,21 +111,66 @@ namespace TestApi
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri("http://localhost:50081");
+                client.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", Authentication.access_token);
 
                 var response = client.GetAsync("api/Usuario/Buscar/1").Result;
 
                 if (response.IsSuccessStatusCode)
                 {
-                    var retorno = response.Content.ReadAsStringAsync().Result;//.TrimStart('\"').TrimEnd('\"').Replace("\\", "");
+                    var retorno = response.Content.ReadAsStringAsync().Result;
 
                     var usuarioEncontrado = JsonConvert.DeserializeObject<Usuario>(retorno, new JsonSerializerSettings
                     {
                         NullValueHandling = NullValueHandling.Ignore
                     });
-                    //List<AccountInfo> lc = JsonConvert.DeserializeObject<List<AccountInfo>>(json, 
+
+                    MessageBox.Show(retorno);
                 }
 
             }
+        }
+
+        private void btnAutenticar_Click(object sender, EventArgs e)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://localhost:50081");
+
+                List<KeyValuePair<string, string>> pairs = new List<KeyValuePair<string, string>>();
+                
+                pairs.Add(new KeyValuePair<string, string>("username", "teste@teste.com.br"));
+                pairs.Add(new KeyValuePair<string, string>("password", "123451"));
+                pairs.Add(new KeyValuePair<string, string>("grant_type", "password"));
+
+                FormUrlEncodedContent content = new FormUrlEncodedContent(pairs);
+
+                var response = client.PostAsync("api/login", content).Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var retorno = response.Content.ReadAsStringAsync().Result;
+
+                    Authentication = JsonConvert.DeserializeObject<Token>(retorno, new JsonSerializerSettings
+                    {
+                        NullValueHandling = NullValueHandling.Ignore
+                    });
+
+                    if (!string.IsNullOrWhiteSpace(Authentication.access_token))
+                    {
+                        MessageBox.Show("Acesso permitido");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Acesso negado");
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Erro ao requisitar acesso");
+                }
+            }
+
         }
     }
 }

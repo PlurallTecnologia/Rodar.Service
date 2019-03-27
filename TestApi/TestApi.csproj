@@ -41,6 +41,7 @@
     <Reference Include="System.Net.Http.Formatting">
       <HintPath>..\References\System.Net.Http.Formatting.dll</HintPath>
     </Reference>
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -62,6 +63,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Models\Usuario.cs" />
+    <Compile Include="Token.cs" />
     <EmbeddedResource Include="formTeste.resx">
       <DependentUpon>formTeste.cs</DependentUpon>
     </EmbeddedResource>

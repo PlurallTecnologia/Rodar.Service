@@ -49,36 +49,37 @@ namespace Rodar.Service.Controllers
 
         //}
 
-        SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["rodarDB"].ToString());
-        SqlCommand cmd = new SqlCommand();
-        SqlDataAdapter adp = null;
+        //SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["rodarDB"].ToString());
+        //SqlCommand cmd = new SqlCommand();
+        //SqlDataAdapter adp = null;
 
-        [HttpPost]
-        [ActionName("DoLogin")]
-        public int Post([System.Web.Http.FromBody] Login Login)
-        {
-            int retorno = 0;
+        //[HttpPost]
+        //[ActionName("DoLogin")]
+        //public bool DoLogin([System.Web.Http.FromBody] Login Login)
+        //{
+        //    int retorno = 0;
 
-            try
-            {
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = "SELECT count(*) FROM Usuario WHERE Email ='" + Login.Email.Trim() + "' and Senha='" + Login.Senha.Trim() + "'";
-                cmd.Connection = con;
+        //    try
+        //    {
+        //        cmd.CommandType = CommandType.Text;
+        //        cmd.CommandText = "SELECT count(*) FROM Usuario WHERE Email ='" + Login.Email.Trim() + "' and Senha='" + Login.Senha.Trim() + "'";
+        //        cmd.Connection = con;
 
-                if (con.State == ConnectionState.Open)
-                {
-                    con.Close();
-                }
+        //        if (con.State == ConnectionState.Open)
+        //        {
+        //            con.Close();
+        //        }
 
-                con.Open();
-                retorno = Convert.ToInt32(cmd.ExecuteScalar());
-                con.Close();
-            }
-            catch
-            {
-            }
+        //        con.Open();
+        //        retorno = Convert.ToInt32(cmd.ExecuteScalar());
+        //        con.Close();
+        //    }
+        //    catch
+        //    {
+        //        return false;
+        //    }
 
-            return retorno;
-        }
+        //    return true;
+        //}
     }
 }

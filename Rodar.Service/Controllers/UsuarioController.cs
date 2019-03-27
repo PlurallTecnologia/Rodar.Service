@@ -13,6 +13,7 @@ using System.Web.Script.Services;
 
 namespace Rodar.Service.Controllers
 {
+    [Authorize]
     public class UsuarioController : ApiController
     {
         SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["rodarDB"].ToString());
