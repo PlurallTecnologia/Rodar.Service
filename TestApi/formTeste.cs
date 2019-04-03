@@ -127,7 +127,6 @@ namespace TestApi
 
                     MessageBox.Show(retorno);
                 }
-
             }
         }
 
@@ -140,12 +139,15 @@ namespace TestApi
                 List<KeyValuePair<string, string>> pairs = new List<KeyValuePair<string, string>>();
                 
                 pairs.Add(new KeyValuePair<string, string>("username", "teste@teste.com.br"));
+                //pairs.Add(new KeyValuePair<string, string>("username", "123456789"));
                 pairs.Add(new KeyValuePair<string, string>("password", "123451"));
                 pairs.Add(new KeyValuePair<string, string>("grant_type", "password"));
 
                 FormUrlEncodedContent content = new FormUrlEncodedContent(pairs);
 
+                //var response = client.PostAsync("api/login?facebookLogin", content).Result;
                 var response = client.PostAsync("api/login", content).Result;
+                //var response = client.PostAsync("api/ExternalLogin", content).Result;
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -171,6 +173,383 @@ namespace TestApi
                 }
             }
 
+        }
+
+        private void btnCadastrarEvento_Click(object sender, EventArgs e)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://localhost:50081");
+                client.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", Authentication.access_token);
+
+                Evento evento = new Evento
+                {
+                    descricaoEvento = "Evento Teste 1",
+                    enderecoBairro = "Bairro 1",
+                    enderecoCEP = "95041-020",
+                    enderecoCidade = "Caxias do Sul",
+                    enderecoComplemento = "Complemento 1",
+                    enderecoNumero = 123,
+                    enderecoRua = "Rua Teste",
+                    idUsuarioCriacao = 1,
+                    enderecoUF = "RS",
+                    urlImagem1 = "/imagem1.jpg",
+                    urlImagem2 = "/imagem2.jpg",
+                    urlImagem3 = "/imagem3.jpg",
+                    urlImagem4 = "/imagem4.jpg",
+                    urlImagem5 = "/imagem5.jpg",
+                    urlImagemCapa = "/imagemcapa.jpg"
+                };
+
+                var response = client.PostAsJsonAsync("api/Evento/Cadastrar", evento).Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var a = response.Content.ReadAsStringAsync();
+
+                    if (a.Result.ToString().Trim() == "0")
+                    {
+                        MessageBox.Show("Erro. Evento Não Cadastrado");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Evento cadastrado com sucesso");
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Erro ao cadastrar");
+                }
+            }
+        }
+
+        private void btnBuscarEvento_Click(object sender, EventArgs e)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://localhost:50081");
+                client.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", Authentication.access_token);
+
+                var response = client.GetAsync("api/Evento/Buscar/1").Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var retorno = response.Content.ReadAsStringAsync().Result;
+
+                    var eventoRetorno = JsonConvert.DeserializeObject<Evento>(retorno, new JsonSerializerSettings
+                    {
+                        NullValueHandling = NullValueHandling.Ignore
+                    });
+
+                    MessageBox.Show(retorno);
+                }
+            }
+        }
+
+        private void btnBuscarTodosEventos_Click(object sender, EventArgs e)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://localhost:50081");
+                client.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", Authentication.access_token);
+
+                var response = client.GetAsync("api/Evento/BuscarTodos").Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var retorno = response.Content.ReadAsStringAsync().Result;
+
+                    var eventosRetorno = JsonConvert.DeserializeObject<List<Evento>>(retorno, new JsonSerializerSettings
+                    {
+                        NullValueHandling = NullValueHandling.Ignore
+                    });
+
+                    MessageBox.Show(retorno);
+                }
+            }
+        }
+
+        private void btnExcluirEvento_Click(object sender, EventArgs e)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://localhost:50081");
+                client.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", Authentication.access_token);
+
+                var response = client.DeleteAsync("api/Evento/Excluir/1").Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var a = response.Content.ReadAsStringAsync();
+
+                    if (a.Result.ToString().Trim() == "0")
+                    {
+                        MessageBox.Show("Erro. Evento Não Excluído");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Evento excluido com sucesso");
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Erro ao excluir");
+                }
+            }
+        }
+
+        private void btnCadastrarCarona_Click(object sender, EventArgs e)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://localhost:50081");
+                client.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", Authentication.access_token);
+
+                EventoCarona eventoCarona = new EventoCarona
+                {
+                    enderecoPartidaBairro = "Partida Bairro 1",
+                    enderecoPartidaCEP = "99999-000",
+                    enderecoPartidaCidade = "Partida Cidade 1",
+                    enderecoPartidaComplemento = "Partida Complemento 1",
+                    enderecoPartidaNumero = 12345,
+                    enderecoPartidaRua = "Partida Rua 1",
+                    enderecoPartidaUF = "sc",
+                    valorParticipacao = 100.55m,
+                    Mensagem = "Mensagem teste 1",
+                    quantidadeVagas = 10,
+                    idEvento = 1,
+                    idUsuarioMotorista = 1
+                };
+
+                var response = client.PostAsJsonAsync("api/EventoCarona/Cadastrar", eventoCarona).Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var a = response.Content.ReadAsStringAsync();
+
+                    if (a.Result.ToString().Trim() == "0")
+                    {
+                        MessageBox.Show("Erro. Evento Não Cadastrado");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Evento cadastrado com sucesso");
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Erro ao cadastrar");
+                }
+            }
+        }
+
+        private void btnBuscarCarona_Click(object sender, EventArgs e)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://localhost:50081");
+                client.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", Authentication.access_token);
+
+                var response = client.GetAsync("api/EventoCarona/Buscar/1").Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var retorno = response.Content.ReadAsStringAsync().Result;
+
+                    var eventoCaronaRetorno = JsonConvert.DeserializeObject<EventoCarona>(retorno, new JsonSerializerSettings
+                    {
+                        NullValueHandling = NullValueHandling.Ignore
+                    });
+
+                    MessageBox.Show(retorno);
+                }
+            }
+        }
+
+        private void btnBuscarTodasCaronas_Click(object sender, EventArgs e)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://localhost:50081");
+                client.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", Authentication.access_token);
+
+                var response = client.GetAsync("api/EventoCarona/BuscarTodos").Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var retorno = response.Content.ReadAsStringAsync().Result;
+
+                    var eventosCaronaRetorno = JsonConvert.DeserializeObject<List<EventoCarona>>(retorno, new JsonSerializerSettings
+                    {
+                        NullValueHandling = NullValueHandling.Ignore
+                    });
+
+                    MessageBox.Show(retorno);
+                }
+            }
+        }
+
+        private void btnExcluirCarona_Click(object sender, EventArgs e)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://localhost:50081");
+                client.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", Authentication.access_token);
+
+                var response = client.DeleteAsync("api/EventoCarona/Excluir/1").Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var a = response.Content.ReadAsStringAsync();
+
+                    if (a.Result.ToString().Trim() == "0")
+                    {
+                        MessageBox.Show("Erro. Carona Não Excluído");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Carona excluido com sucesso");
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Erro ao excluir");
+                }
+            }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://localhost:50081");
+                client.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", Authentication.access_token);
+
+                var response = client.DeleteAsync("api/EventoTransporte/Excluir/1").Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var a = response.Content.ReadAsStringAsync();
+
+                    if (a.Result.ToString().Trim() == "0")
+                    {
+                        MessageBox.Show("Erro. Transporte Não Excluído");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Transporte excluido com sucesso");
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Erro ao excluir");
+                }
+            }
+        }
+
+        private void btnCadastrarTransporte_Click(object sender, EventArgs e)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://localhost:50081");
+                client.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", Authentication.access_token);
+
+                EventoTransporte eventoTransporte = new EventoTransporte
+                {
+                    enderecoPartidaBairro = "Partida Bairro 1",
+                    enderecoPartidaCEP = "99999-000",
+                    enderecoPartidaCidade = "Partida Cidade 1",
+                    enderecoPartidaComplemento = "Partida Complemento 1",
+                    enderecoPartidaNumero = 12345,
+                    enderecoPartidaRua = "Partida Rua 1",
+                    enderecoPartidaUF = "sc",
+                    valorParticipacao = 100.55m,
+                    Mensagem = "Mensagem teste 1",
+                    quantidadeVagas = 10,
+                    idEvento = 1,
+                    idUsuarioTransportador = 1
+                };
+
+                var response = client.PostAsJsonAsync("api/EventoTransporte/Cadastrar", eventoTransporte).Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var a = response.Content.ReadAsStringAsync();
+
+                    if (a.Result.ToString().Trim() == "0")
+                    {
+                        MessageBox.Show("Erro. Transporte Não Cadastrado");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Transporte cadastrado com sucesso");
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Erro ao cadastrar");
+                }
+            }
+        }
+
+        private void btnBuscarTransporte_Click(object sender, EventArgs e)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://localhost:50081");
+                client.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", Authentication.access_token);
+
+                var response = client.GetAsync("api/EventoTransporte/Buscar/1").Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var retorno = response.Content.ReadAsStringAsync().Result;
+
+                    var eventoCaronaRetorno = JsonConvert.DeserializeObject<EventoTransporte>(retorno, new JsonSerializerSettings
+                    {
+                        NullValueHandling = NullValueHandling.Ignore
+                    });
+
+                    MessageBox.Show(retorno);
+                }
+            }
+        }
+
+        private void btnBuscarTodosTransportes_Click(object sender, EventArgs e)
+        {
+            {
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri("http://localhost:50081");
+                    client.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Bearer", Authentication.access_token);
+
+                    var response = client.GetAsync("api/EventoTransporte/BuscarTodos").Result;
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var retorno = response.Content.ReadAsStringAsync().Result;
+
+                        var eventosCaronaRetorno = JsonConvert.DeserializeObject<List<EventoTransporte>>(retorno, new JsonSerializerSettings
+                        {
+                            NullValueHandling = NullValueHandling.Ignore
+                        });
+
+                        MessageBox.Show(retorno);
+                    }
+                }
+            }
         }
     }
 }

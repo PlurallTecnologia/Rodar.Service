@@ -59,6 +59,9 @@
     <Compile Include="formTeste.Designer.cs">
       <DependentUpon>formTeste.cs</DependentUpon>
     </Compile>
+    <Compile Include="Models\Evento.cs" />
+    <Compile Include="Models\EventoCarona.cs" />
+    <Compile Include="Models\EventoTransporte.cs" />
     <Compile Include="Models\Login.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

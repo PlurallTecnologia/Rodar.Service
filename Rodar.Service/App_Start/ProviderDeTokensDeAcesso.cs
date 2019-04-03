@@ -19,7 +19,15 @@ namespace Rodar.Service.App_Start
 
         public override async Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
         {
-            if (LoginService.Login(context.UserName, context.Password))
+            var facebookLogin = !string.IsNullOrWhiteSpace(context.Request.QueryString.Value) && context.Request.QueryString.Value == "facebookLogin";
+            var logged = false;
+
+            if (facebookLogin)
+                logged = LoginService.LoginByFacebook(context.UserName);
+            else
+                logged = LoginService.Login(context.UserName, context.Password);
+
+            if (logged)
             {
                 var identity = new ClaimsIdentity(context.Options.AuthenticationType);
                 identity.AddClaim(new Claim("sub", context.UserName));

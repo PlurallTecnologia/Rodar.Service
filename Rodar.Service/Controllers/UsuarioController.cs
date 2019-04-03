@@ -20,6 +20,7 @@ namespace Rodar.Service.Controllers
 
         [HttpPost]
         [ActionName("Cadastrar")]
+        [AllowAnonymous]
         public HttpResponseMessage Cadastrar([System.Web.Http.FromBody] Usuario Usuario)
         {
             using (con)
@@ -180,9 +181,46 @@ namespace Rodar.Service.Controllers
         }
 
         [HttpGet]
+        [ActionName("BuscarPorIdFacebook")]
+        public HttpResponseMessage BuscarPorIdFacebook(string facebookId)
+        {
+            Usuario usuario = new Usuario();
+
+            using (con)
+            {
+                string stringSQL = @"SELECT *
+                                    FROM Usuario
+                                    WHERE facebookId = @facebookId";
+
+                SqlCommand cmdSelecionar = new SqlCommand(stringSQL, con);
+
+                cmdSelecionar.Parameters.Add("facebookId", SqlDbType.VarChar).Value = facebookId;
+
+                try
+                {
+                    con.Open();
+                    SqlDataReader drSelecao = cmdSelecionar.ExecuteReader();
+
+                    if (drSelecao.Read())
+                        PreencheCampos(drSelecao, ref usuario);
+                }
+                catch (Exception Ex)
+                {
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, Ex.Message);
+                }
+                finally
+                {
+                    con.Close();
+                }
+            }
+
+            return Request.CreateResponse(HttpStatusCode.OK, usuario);
+        }
+
+        [HttpGet]
         [ActionName("BuscarTodos")]
         [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
-        public HttpResponseMessage GetAll()
+        public HttpResponseMessage BuscarTodos()
         {
             List<Usuario> usuarios = new List<Usuario>();
 
@@ -218,7 +256,7 @@ namespace Rodar.Service.Controllers
             }
 
             return Request.CreateResponse(HttpStatusCode.OK, usuarios);
-        }
+        }   
 
         private static void PreencheCampos(SqlDataReader drSelecao, ref Usuario usuario)
         {

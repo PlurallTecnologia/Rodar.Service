@@ -30,7 +30,7 @@ namespace Rodar.Service
              );
 
             config.Formatters.JsonFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("text/html"));
-
+            
             // ativando cors
             app.UseCors(CorsOptions.AllowAll);
 
@@ -48,7 +48,8 @@ namespace Rodar.Service
             {
                 AllowInsecureHttp = true,
                 TokenEndpointPath = new PathString("/api/login"),
-                AccessTokenExpireTimeSpan = TimeSpan.FromHours(1),
+                AccessTokenExpireTimeSpan = TimeSpan.FromDays(14),
+                AuthorizeEndpointPath = new PathString("/api/ExternalLogin"),
                 Provider = new ProviderDeTokensDeAcesso()
             };
 
