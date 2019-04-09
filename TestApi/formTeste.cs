@@ -15,6 +15,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using Newtonsoft.Json;
 using TestApi.Models;
+using System.IO;
 
 namespace TestApi
 {
@@ -66,7 +67,7 @@ namespace TestApi
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri("http://localhost:50081");
-                Usuario usuario = new Usuario { nomeCompleto = "Teste Usuario", Email = "testeusuario@gmail.com", Senha = "abc" };
+                Usuario usuario = new Usuario { Nome = "Jonatan", Sobrenome = "Costa", Email = "testeusuario@gmail.com", Senha = "abc" };
                 var response = client.PostAsJsonAsync("api/Usuario/Cadastrar", usuario).Result;
 
                 if (response.IsSuccessStatusCode)
@@ -95,7 +96,10 @@ namespace TestApi
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri("http://localhost:50081");
-                Usuario usuario = new Usuario { nomeCompleto = "Ana Paula", Email = "anapaulaludke@gmail.com", Senha = "123" };
+                client.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", Authentication.access_token);
+
+                Usuario usuario = new Usuario { Nome = "Nome", Sobrenome = "Sobrenome", Email = "1@1.com.br", Senha = "123" };
 
                 var response = client.PostAsJsonAsync("api/Usuario/Atualizar", usuario).Result;
 
@@ -114,7 +118,7 @@ namespace TestApi
                 client.DefaultRequestHeaders.Authorization =
                     new AuthenticationHeaderValue("Bearer", Authentication.access_token);
 
-                var response = client.GetAsync("api/Usuario/Buscar/1").Result;
+                var response = client.GetAsync("api/Usuario/Buscar").Result;
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -138,9 +142,9 @@ namespace TestApi
 
                 List<KeyValuePair<string, string>> pairs = new List<KeyValuePair<string, string>>();
                 
-                pairs.Add(new KeyValuePair<string, string>("username", "teste@teste.com.br"));
+                pairs.Add(new KeyValuePair<string, string>("username", "1@1.com.br"));
                 //pairs.Add(new KeyValuePair<string, string>("username", "123456789"));
-                pairs.Add(new KeyValuePair<string, string>("password", "123451"));
+                pairs.Add(new KeyValuePair<string, string>("password", "1"));
                 pairs.Add(new KeyValuePair<string, string>("grant_type", "password"));
 
                 FormUrlEncodedContent content = new FormUrlEncodedContent(pairs);
@@ -528,28 +532,97 @@ namespace TestApi
 
         private void btnBuscarTodosTransportes_Click(object sender, EventArgs e)
         {
+
+            using (var client = new HttpClient())
             {
-                using (var client = new HttpClient())
+                client.BaseAddress = new Uri("http://localhost:50081");
+                client.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", Authentication.access_token);
+
+                var response = client.GetAsync("api/EventoTransporte/BuscarTodos").Result;
+
+                if (response.IsSuccessStatusCode)
                 {
-                    client.BaseAddress = new Uri("http://localhost:50081");
-                    client.DefaultRequestHeaders.Authorization =
-                        new AuthenticationHeaderValue("Bearer", Authentication.access_token);
+                    var retorno = response.Content.ReadAsStringAsync().Result;
 
-                    var response = client.GetAsync("api/EventoTransporte/BuscarTodos").Result;
-
-                    if (response.IsSuccessStatusCode)
+                    var eventosCaronaRetorno = JsonConvert.DeserializeObject<List<EventoTransporte>>(retorno, new JsonSerializerSettings
                     {
-                        var retorno = response.Content.ReadAsStringAsync().Result;
+                        NullValueHandling = NullValueHandling.Ignore
+                    });
 
-                        var eventosCaronaRetorno = JsonConvert.DeserializeObject<List<EventoTransporte>>(retorno, new JsonSerializerSettings
-                        {
-                            NullValueHandling = NullValueHandling.Ignore
-                        });
-
-                        MessageBox.Show(retorno);
-                    }
+                    MessageBox.Show(retorno);
                 }
             }
         }
+
+        private void btnEnviarFoto_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Image Files (*.jpg; *.jpeg; *.gif; *.bmp; *.png)|*.jpg; *.jpeg; *.gif; *.bmp; *.png";
+
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                UploadToRestService(openFileDialog.FileName, openFileDialog.SafeFileName);
+            }
+        }
+
+        private void UploadToRestService(string FileName, string safeFilename)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://localhost:50081");
+                client.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", Authentication.access_token);
+
+                MultipartFormDataContent form = new MultipartFormDataContent();
+                HttpContent content = new StringContent("fileToUpload");
+
+                //form.Add(content, "fileToUpload");
+
+                var stream = new FileStream(FileName, FileMode.Open);
+                content = new StreamContent(stream);
+
+                content.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data")
+                {
+                    Name = "fileToUpload",
+                    FileName = safeFilename
+                };
+                form.Add(content);
+
+                HttpResponseMessage response = null;
+
+                try
+                {
+                    response = (client.PostAsync("api/Usuario/EnviarSelfie", form)).Result;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+
+                var k = response.Content.ReadAsStringAsync().Result;
+            }
+        }
+
+        //public static async Task<string> Upload(byte[] image)
+        //{
+        //    using (var client = new HttpClient())
+        //    {
+        //        using (var content =
+        //            new MultipartFormDataContent("Upload----" + DateTime.Now.ToString(CultureInfo.InvariantCulture)))
+        //        {
+        //            content.Add(new StreamContent(new MemoryStream(image)), "bilddatei", "upload.jpg");
+
+        //            using (
+        //               var message =
+        //                   await client.PostAsync("http://www.directupload.net/index.php?mode=upload", content))
+        //            {
+        //                var input = await message.Content.ReadAsStringAsync();
+
+        //                return !string.IsNullOrWhiteSpace(input) ? Regex.Match(input, @"http://\w*\.directupload\.net/images/\d*/\w*\.[a-z]{3}").Value : null;
+        //            }
+        //        }
+        //    }
+        //}
     }
 }

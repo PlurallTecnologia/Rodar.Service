@@ -46,6 +46,7 @@
             this.btnBuscarTodosTransportes = new System.Windows.Forms.Button();
             this.btnBuscarTransporte = new System.Windows.Forms.Button();
             this.btnCadastrarTransporte = new System.Windows.Forms.Button();
+            this.btnEnviarFoto = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnLogar
@@ -90,7 +91,7 @@
             // 
             // btnAutenticar
             // 
-            this.btnAutenticar.Location = new System.Drawing.Point(266, 286);
+            this.btnAutenticar.Location = new System.Drawing.Point(266, 257);
             this.btnAutenticar.Name = "btnAutenticar";
             this.btnAutenticar.Size = new System.Drawing.Size(75, 23);
             this.btnAutenticar.TabIndex = 4;
@@ -100,7 +101,7 @@
             // 
             // btnBuscarFacebookId
             // 
-            this.btnBuscarFacebookId.Location = new System.Drawing.Point(266, 213);
+            this.btnBuscarFacebookId.Location = new System.Drawing.Point(266, 193);
             this.btnBuscarFacebookId.Name = "btnBuscarFacebookId";
             this.btnBuscarFacebookId.Size = new System.Drawing.Size(75, 52);
             this.btnBuscarFacebookId.TabIndex = 5;
@@ -227,11 +228,22 @@
             this.btnCadastrarTransporte.UseVisualStyleBackColor = true;
             this.btnCadastrarTransporte.Click += new System.EventHandler(this.btnCadastrarTransporte_Click);
             // 
+            // btnEnviarFoto
+            // 
+            this.btnEnviarFoto.Location = new System.Drawing.Point(266, 297);
+            this.btnEnviarFoto.Name = "btnEnviarFoto";
+            this.btnEnviarFoto.Size = new System.Drawing.Size(75, 23);
+            this.btnEnviarFoto.TabIndex = 18;
+            this.btnEnviarFoto.Text = "Enviar Foto";
+            this.btnEnviarFoto.UseVisualStyleBackColor = true;
+            this.btnEnviarFoto.Click += new System.EventHandler(this.btnEnviarFoto_Click);
+            // 
             // formTeste
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(611, 525);
+            this.Controls.Add(this.btnEnviarFoto);
             this.Controls.Add(this.btnExcluirTransporte);
             this.Controls.Add(this.btnBuscarTodosTransportes);
             this.Controls.Add(this.btnBuscarTransporte);
@@ -277,6 +289,7 @@
         private System.Windows.Forms.Button btnBuscarTodosTransportes;
         private System.Windows.Forms.Button btnBuscarTransporte;
         private System.Windows.Forms.Button btnCadastrarTransporte;
+        private System.Windows.Forms.Button btnEnviarFoto;
     }
 }
 

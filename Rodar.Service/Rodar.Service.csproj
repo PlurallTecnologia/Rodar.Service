@@ -208,12 +208,12 @@
     <Compile Include="Controllers\EventoController.cs" />
     <Compile Include="Controllers\EventoTransporteController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\UsuarioController.cs" />
-    <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Providers\DBConnection.cs" />
+    <Compile Include="Providers\LoggedUserInformation.cs" />
     <Compile Include="Models\Evento.cs" />
     <Compile Include="Models\EventoCarona.cs" />
     <Compile Include="Models\EventoTransporte.cs" />
@@ -277,6 +277,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="UserImages\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

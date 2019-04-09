@@ -8,7 +8,8 @@ namespace Rodar.Service.Models
     public class Usuario
     {
         public int idUsuario { get; set; }
-        public string nomeCompleto { get; set; }
+        public string Nome { get; set; }
+        public string Sobrenome { get; set; }
         public string RG { get; set; }
         public string CPF { get; set; }
         public string urlImagemSelfie { get; set; }

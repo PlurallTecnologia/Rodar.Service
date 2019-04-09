@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Rodar.Service.Models;
+using Rodar.Service.Providers;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -15,13 +16,11 @@ namespace Rodar.Service.Controllers
 {
     public class EventoTransporteController : ApiController
     {
-        SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["rodarDB"].ToString());
-
         [HttpPost]
         [ActionName("Cadastrar")]
         public HttpResponseMessage Cadastrar([System.Web.Http.FromBody] EventoTransporte eventoTransporte)
         {
-            using (con)
+            using (SqlConnection con = DBConnection.GetDBConnection())
             {
                 string stringSQL = @"INSERT INTO EventoTransporte
                                                 (idEvento
@@ -95,7 +94,7 @@ namespace Rodar.Service.Controllers
         [ActionName("Atualizar")]
         public HttpResponseMessage Atualizar([System.Web.Http.FromBody] EventoTransporte eventoTransporte)
         {
-            using (con)
+            using (SqlConnection con = DBConnection.GetDBConnection())
             {
                 string stringSQL = @"UPDATE EventoTransporte
                                        SET idEvento = idEvento
@@ -157,7 +156,7 @@ namespace Rodar.Service.Controllers
         {
             EventoTransporte eventoTransporte = new EventoTransporte();
 
-            using (con)
+            using (SqlConnection con = DBConnection.GetDBConnection())
             {
                 string stringSQL = @"SELECT *
                                         FROM EventoTransporte
@@ -192,7 +191,7 @@ namespace Rodar.Service.Controllers
         [ActionName("Excluir")]
         public HttpResponseMessage Excluir(int id)
         {
-            using (con)
+            using (SqlConnection con = DBConnection.GetDBConnection())
             {
                 string stringSQL = @"DELETE FROM EventoTransporte
                                         WHERE idEventoTransporte = @idEventoTransporte";
@@ -225,7 +224,7 @@ namespace Rodar.Service.Controllers
         {
             List<EventoTransporte> eventoTransportes = new List<EventoTransporte>();
 
-            using (con)
+            using (SqlConnection con = DBConnection.GetDBConnection())
             {
                 string stringSQL = @"SELECT *
                                         FROM EventoTransporte";

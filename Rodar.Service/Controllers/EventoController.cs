@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Rodar.Service.Models;
+using Rodar.Service.Providers;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -15,13 +16,11 @@ namespace Rodar.Service.Controllers
 {
     public class EventoController : ApiController
     {
-        SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["rodarDB"].ToString());
-
         [HttpPost]
         [ActionName("Cadastrar")]
         public HttpResponseMessage Cadastrar([System.Web.Http.FromBody] Evento Evento)
         {
-            using (con)
+            using (SqlConnection con = DBConnection.GetDBConnection())
             {
                 string stringSQL = @"INSERT INTO Evento(dataCriacao
                                                         ,idUsuarioCriacao
@@ -123,7 +122,7 @@ namespace Rodar.Service.Controllers
         [ActionName("Atualizar")]
         public HttpResponseMessage Atualizar([System.Web.Http.FromBody] Evento Evento)
         {
-            using (con)
+            using (SqlConnection con = DBConnection.GetDBConnection())
             {
                 string stringSQL = @"UPDATE Evento
                                        SET dataCriacao = @dataCriacao
@@ -208,7 +207,7 @@ namespace Rodar.Service.Controllers
         {
             Evento evento = new Evento();
 
-            using (con)
+            using (SqlConnection con = DBConnection.GetDBConnection())
             {
                 string stringSQL = @"SELECT *
                                         FROM Evento
@@ -243,7 +242,7 @@ namespace Rodar.Service.Controllers
         [ActionName("Excluir")]
         public HttpResponseMessage Excluir(int id)
         {
-            using (con)
+            using (SqlConnection con = DBConnection.GetDBConnection())
             {
                 string stringSQL = @"DELETE FROM Evento
                                         WHERE idEvento = @idEvento";
@@ -276,7 +275,7 @@ namespace Rodar.Service.Controllers
         {
             List<Evento> eventos = new List<Evento>();
 
-            using (con)
+            using (SqlConnection con = DBConnection.GetDBConnection())
             {
                 string stringSQL = @"SELECT *
                                         FROM Evento";
