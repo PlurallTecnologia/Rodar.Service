@@ -73,7 +73,7 @@ namespace Rodar.Service.Controllers
                 else
                     cmdInserir.Parameters.Add("dataCriacao", SqlDbType.VarChar).Value = Evento.dataCriacao;
 
-                cmdInserir.Parameters.Add("idUsuarioCriacao", SqlDbType.Int).Value = Evento.idUsuarioCriacao;
+                cmdInserir.Parameters.Add("idUsuarioCriacao", SqlDbType.Int).Value = Globals.LoggedUserInformation.userId;
                 cmdInserir.Parameters.Add("enderecoRua", SqlDbType.VarChar).Value = Evento.enderecoRua;
                 cmdInserir.Parameters.Add("enderecoComplemento", SqlDbType.VarChar).Value = Evento.enderecoComplemento;
                 cmdInserir.Parameters.Add("enderecoBairro", SqlDbType.VarChar).Value = Evento.enderecoBairro;
@@ -126,7 +126,6 @@ namespace Rodar.Service.Controllers
             {
                 string stringSQL = @"UPDATE Evento
                                        SET dataCriacao = @dataCriacao
-                                          ,idUsuarioCriacao = @idUsuarioCriacao
                                           ,enderecoRua = @enderecoRua
                                           ,enderecoComplemento = @enderecoComplemento
                                           ,enderecoBairro = @enderecoBairro
@@ -156,7 +155,6 @@ namespace Rodar.Service.Controllers
                 else
                     cmdAtualizar.Parameters.Add("dataCriacao", SqlDbType.VarChar).Value = Evento.dataCriacao;
 
-                cmdAtualizar.Parameters.Add("idUsuarioCriacao", SqlDbType.Int).Value = Evento.idUsuarioCriacao;
                 cmdAtualizar.Parameters.Add("enderecoRua", SqlDbType.VarChar).Value = Evento.enderecoRua;
                 cmdAtualizar.Parameters.Add("enderecoComplemento", SqlDbType.VarChar).Value = Evento.enderecoComplemento;
                 cmdAtualizar.Parameters.Add("enderecoBairro", SqlDbType.VarChar).Value = Evento.enderecoBairro;
@@ -278,9 +276,12 @@ namespace Rodar.Service.Controllers
             using (SqlConnection con = DBConnection.GetDBConnection())
             {
                 string stringSQL = @"SELECT *
-                                        FROM Evento";
+                                        FROM Evento
+                                        WHERE idUsuarioCriacao = @idUsuarioCriacao";
 
                 SqlCommand cmdSelecionar = new SqlCommand(stringSQL, con);
+
+                cmdSelecionar.Parameters.Add("idUsuarioCriacao", SqlDbType.Int).Value = Globals.LoggedUserInformation.userId;
 
                 try
                 {

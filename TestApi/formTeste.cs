@@ -196,7 +196,6 @@ namespace TestApi
                     enderecoComplemento = "Complemento 1",
                     enderecoNumero = 123,
                     enderecoRua = "Rua Teste",
-                    idUsuarioCriacao = 1,
                     enderecoUF = "RS",
                     urlImagem1 = "/imagem1.jpg",
                     urlImagem2 = "/imagem2.jpg",
