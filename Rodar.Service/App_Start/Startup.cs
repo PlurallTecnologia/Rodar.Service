@@ -29,6 +29,8 @@ namespace Rodar.Service
                   defaults: new { id = RouteParameter.Optional }
              );
 
+            
+
             config.Formatters.JsonFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("text/html"));
             
             // ativando cors
@@ -56,5 +58,16 @@ namespace Rodar.Service
             app.UseOAuthAuthorizationServer(opcoesConfiguracaoToken);
             app.UseOAuthBearerAuthentication(new OAuthBearerAuthenticationOptions());
         }
+
+
+    //    public static void RegisterComponents()
+    //    {
+    //        var builder = new ContainerBuilder();
+    //        builder.RegisterType<CustomerRepository>().As<ICustomerRepository>();
+    //        builder.RegisterType<CustomerController>();
+    //        builder.RegisterType<Northwind_DBEntities>().As<INorthwind_DBEntities>();
+    //        var container = builder.Build();
+    //        DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
+    //    }
     }
 }

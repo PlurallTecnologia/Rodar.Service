@@ -47,13 +47,17 @@
             this.btnBuscarTransporte = new System.Windows.Forms.Button();
             this.btnCadastrarTransporte = new System.Windows.Forms.Button();
             this.btnEnviarFoto = new System.Windows.Forms.Button();
+            this.btnAdicionarFavorito = new System.Windows.Forms.Button();
+            this.btnRemoverFavorito = new System.Windows.Forms.Button();
+            this.btnBuscarListaCidadesUfs = new System.Windows.Forms.Button();
+            this.btnBuscarCaronaPorEvento = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnLogar
             // 
-            this.btnLogar.Location = new System.Drawing.Point(266, 20);
+            this.btnLogar.Location = new System.Drawing.Point(161, 20);
             this.btnLogar.Name = "btnLogar";
-            this.btnLogar.Size = new System.Drawing.Size(75, 23);
+            this.btnLogar.Size = new System.Drawing.Size(115, 23);
             this.btnLogar.TabIndex = 0;
             this.btnLogar.Text = "Logar";
             this.btnLogar.UseVisualStyleBackColor = true;
@@ -61,39 +65,39 @@
             // 
             // btnCadastrar
             // 
-            this.btnCadastrar.Location = new System.Drawing.Point(266, 68);
+            this.btnCadastrar.Location = new System.Drawing.Point(12, 49);
             this.btnCadastrar.Name = "btnCadastrar";
-            this.btnCadastrar.Size = new System.Drawing.Size(75, 23);
+            this.btnCadastrar.Size = new System.Drawing.Size(115, 23);
             this.btnCadastrar.TabIndex = 1;
-            this.btnCadastrar.Text = "Cadastrar";
+            this.btnCadastrar.Text = "Cadastrar Usuário";
             this.btnCadastrar.UseVisualStyleBackColor = true;
             this.btnCadastrar.Click += new System.EventHandler(this.btnCadastrar_Click);
             // 
             // btnAtualizar
             // 
-            this.btnAtualizar.Location = new System.Drawing.Point(266, 116);
+            this.btnAtualizar.Location = new System.Drawing.Point(133, 49);
             this.btnAtualizar.Name = "btnAtualizar";
-            this.btnAtualizar.Size = new System.Drawing.Size(75, 23);
+            this.btnAtualizar.Size = new System.Drawing.Size(115, 23);
             this.btnAtualizar.TabIndex = 2;
-            this.btnAtualizar.Text = "Atualizar";
+            this.btnAtualizar.Text = "Atualizar Usuário";
             this.btnAtualizar.UseVisualStyleBackColor = true;
             this.btnAtualizar.Click += new System.EventHandler(this.btnAtualizar_Click);
             // 
             // btnBuscar
             // 
-            this.btnBuscar.Location = new System.Drawing.Point(266, 164);
+            this.btnBuscar.Location = new System.Drawing.Point(254, 49);
             this.btnBuscar.Name = "btnBuscar";
-            this.btnBuscar.Size = new System.Drawing.Size(75, 23);
+            this.btnBuscar.Size = new System.Drawing.Size(115, 23);
             this.btnBuscar.TabIndex = 3;
-            this.btnBuscar.Text = "Buscar";
+            this.btnBuscar.Text = "Buscar Usuário";
             this.btnBuscar.UseVisualStyleBackColor = true;
             this.btnBuscar.Click += new System.EventHandler(this.btnBuscar_Click);
             // 
             // btnAutenticar
             // 
-            this.btnAutenticar.Location = new System.Drawing.Point(266, 257);
+            this.btnAutenticar.Location = new System.Drawing.Point(289, 20);
             this.btnAutenticar.Name = "btnAutenticar";
-            this.btnAutenticar.Size = new System.Drawing.Size(75, 23);
+            this.btnAutenticar.Size = new System.Drawing.Size(115, 23);
             this.btnAutenticar.TabIndex = 4;
             this.btnAutenticar.Text = "Autenticar";
             this.btnAutenticar.UseVisualStyleBackColor = true;
@@ -101,18 +105,18 @@
             // 
             // btnBuscarFacebookId
             // 
-            this.btnBuscarFacebookId.Location = new System.Drawing.Point(266, 193);
+            this.btnBuscarFacebookId.Location = new System.Drawing.Point(375, 49);
             this.btnBuscarFacebookId.Name = "btnBuscarFacebookId";
-            this.btnBuscarFacebookId.Size = new System.Drawing.Size(75, 52);
+            this.btnBuscarFacebookId.Size = new System.Drawing.Size(140, 23);
             this.btnBuscarFacebookId.TabIndex = 5;
             this.btnBuscarFacebookId.Text = "Buscar por Facebook Id";
             this.btnBuscarFacebookId.UseVisualStyleBackColor = true;
             // 
             // btnCadastrarEvento
             // 
-            this.btnCadastrarEvento.Location = new System.Drawing.Point(104, 343);
+            this.btnCadastrarEvento.Location = new System.Drawing.Point(12, 78);
             this.btnCadastrarEvento.Name = "btnCadastrarEvento";
-            this.btnCadastrarEvento.Size = new System.Drawing.Size(75, 37);
+            this.btnCadastrarEvento.Size = new System.Drawing.Size(124, 37);
             this.btnCadastrarEvento.TabIndex = 6;
             this.btnCadastrarEvento.Text = "Cadastrar Evento";
             this.btnCadastrarEvento.UseVisualStyleBackColor = true;
@@ -120,9 +124,9 @@
             // 
             // btnBuscarEvento
             // 
-            this.btnBuscarEvento.Location = new System.Drawing.Point(185, 343);
+            this.btnBuscarEvento.Location = new System.Drawing.Point(142, 78);
             this.btnBuscarEvento.Name = "btnBuscarEvento";
-            this.btnBuscarEvento.Size = new System.Drawing.Size(75, 37);
+            this.btnBuscarEvento.Size = new System.Drawing.Size(126, 37);
             this.btnBuscarEvento.TabIndex = 7;
             this.btnBuscarEvento.Text = "Buscar Evento";
             this.btnBuscarEvento.UseVisualStyleBackColor = true;
@@ -130,7 +134,7 @@
             // 
             // btnBuscarTodosEventos
             // 
-            this.btnBuscarTodosEventos.Location = new System.Drawing.Point(266, 343);
+            this.btnBuscarTodosEventos.Location = new System.Drawing.Point(274, 78);
             this.btnBuscarTodosEventos.Name = "btnBuscarTodosEventos";
             this.btnBuscarTodosEventos.Size = new System.Drawing.Size(138, 37);
             this.btnBuscarTodosEventos.TabIndex = 8;
@@ -140,9 +144,9 @@
             // 
             // btnExcluirEvento
             // 
-            this.btnExcluirEvento.Location = new System.Drawing.Point(410, 343);
+            this.btnExcluirEvento.Location = new System.Drawing.Point(418, 78);
             this.btnExcluirEvento.Name = "btnExcluirEvento";
-            this.btnExcluirEvento.Size = new System.Drawing.Size(75, 37);
+            this.btnExcluirEvento.Size = new System.Drawing.Size(117, 37);
             this.btnExcluirEvento.TabIndex = 9;
             this.btnExcluirEvento.Text = "Excluir Evento";
             this.btnExcluirEvento.UseVisualStyleBackColor = true;
@@ -150,9 +154,9 @@
             // 
             // btnExcluirCarona
             // 
-            this.btnExcluirCarona.Location = new System.Drawing.Point(410, 386);
+            this.btnExcluirCarona.Location = new System.Drawing.Point(541, 121);
             this.btnExcluirCarona.Name = "btnExcluirCarona";
-            this.btnExcluirCarona.Size = new System.Drawing.Size(75, 37);
+            this.btnExcluirCarona.Size = new System.Drawing.Size(117, 37);
             this.btnExcluirCarona.TabIndex = 13;
             this.btnExcluirCarona.Text = "Excluir Carona";
             this.btnExcluirCarona.UseVisualStyleBackColor = true;
@@ -160,7 +164,7 @@
             // 
             // btnBuscarTodasCaronas
             // 
-            this.btnBuscarTodasCaronas.Location = new System.Drawing.Point(266, 386);
+            this.btnBuscarTodasCaronas.Location = new System.Drawing.Point(274, 121);
             this.btnBuscarTodasCaronas.Name = "btnBuscarTodasCaronas";
             this.btnBuscarTodasCaronas.Size = new System.Drawing.Size(138, 37);
             this.btnBuscarTodasCaronas.TabIndex = 12;
@@ -170,9 +174,9 @@
             // 
             // btnBuscarCarona
             // 
-            this.btnBuscarCarona.Location = new System.Drawing.Point(185, 386);
+            this.btnBuscarCarona.Location = new System.Drawing.Point(142, 121);
             this.btnBuscarCarona.Name = "btnBuscarCarona";
-            this.btnBuscarCarona.Size = new System.Drawing.Size(75, 37);
+            this.btnBuscarCarona.Size = new System.Drawing.Size(126, 37);
             this.btnBuscarCarona.TabIndex = 11;
             this.btnBuscarCarona.Text = "Buscar Carona";
             this.btnBuscarCarona.UseVisualStyleBackColor = true;
@@ -180,9 +184,9 @@
             // 
             // btnCadastrarCarona
             // 
-            this.btnCadastrarCarona.Location = new System.Drawing.Point(104, 386);
+            this.btnCadastrarCarona.Location = new System.Drawing.Point(12, 121);
             this.btnCadastrarCarona.Name = "btnCadastrarCarona";
-            this.btnCadastrarCarona.Size = new System.Drawing.Size(75, 37);
+            this.btnCadastrarCarona.Size = new System.Drawing.Size(124, 37);
             this.btnCadastrarCarona.TabIndex = 10;
             this.btnCadastrarCarona.Text = "Cadastrar Carona";
             this.btnCadastrarCarona.UseVisualStyleBackColor = true;
@@ -190,9 +194,9 @@
             // 
             // btnExcluirTransporte
             // 
-            this.btnExcluirTransporte.Location = new System.Drawing.Point(410, 429);
+            this.btnExcluirTransporte.Location = new System.Drawing.Point(418, 164);
             this.btnExcluirTransporte.Name = "btnExcluirTransporte";
-            this.btnExcluirTransporte.Size = new System.Drawing.Size(75, 37);
+            this.btnExcluirTransporte.Size = new System.Drawing.Size(117, 37);
             this.btnExcluirTransporte.TabIndex = 17;
             this.btnExcluirTransporte.Text = "Excluir Transporte";
             this.btnExcluirTransporte.UseVisualStyleBackColor = true;
@@ -200,7 +204,7 @@
             // 
             // btnBuscarTodosTransportes
             // 
-            this.btnBuscarTodosTransportes.Location = new System.Drawing.Point(266, 429);
+            this.btnBuscarTodosTransportes.Location = new System.Drawing.Point(274, 164);
             this.btnBuscarTodosTransportes.Name = "btnBuscarTodosTransportes";
             this.btnBuscarTodosTransportes.Size = new System.Drawing.Size(138, 37);
             this.btnBuscarTodosTransportes.TabIndex = 16;
@@ -210,9 +214,9 @@
             // 
             // btnBuscarTransporte
             // 
-            this.btnBuscarTransporte.Location = new System.Drawing.Point(185, 429);
+            this.btnBuscarTransporte.Location = new System.Drawing.Point(142, 164);
             this.btnBuscarTransporte.Name = "btnBuscarTransporte";
-            this.btnBuscarTransporte.Size = new System.Drawing.Size(75, 37);
+            this.btnBuscarTransporte.Size = new System.Drawing.Size(126, 37);
             this.btnBuscarTransporte.TabIndex = 15;
             this.btnBuscarTransporte.Text = "Buscar Transporte";
             this.btnBuscarTransporte.UseVisualStyleBackColor = true;
@@ -220,9 +224,9 @@
             // 
             // btnCadastrarTransporte
             // 
-            this.btnCadastrarTransporte.Location = new System.Drawing.Point(104, 429);
+            this.btnCadastrarTransporte.Location = new System.Drawing.Point(12, 164);
             this.btnCadastrarTransporte.Name = "btnCadastrarTransporte";
-            this.btnCadastrarTransporte.Size = new System.Drawing.Size(75, 37);
+            this.btnCadastrarTransporte.Size = new System.Drawing.Size(124, 37);
             this.btnCadastrarTransporte.TabIndex = 14;
             this.btnCadastrarTransporte.Text = "Cadastrar Transporte";
             this.btnCadastrarTransporte.UseVisualStyleBackColor = true;
@@ -230,19 +234,63 @@
             // 
             // btnEnviarFoto
             // 
-            this.btnEnviarFoto.Location = new System.Drawing.Point(266, 297);
+            this.btnEnviarFoto.Location = new System.Drawing.Point(521, 49);
             this.btnEnviarFoto.Name = "btnEnviarFoto";
-            this.btnEnviarFoto.Size = new System.Drawing.Size(75, 23);
+            this.btnEnviarFoto.Size = new System.Drawing.Size(128, 23);
             this.btnEnviarFoto.TabIndex = 18;
             this.btnEnviarFoto.Text = "Enviar Foto";
             this.btnEnviarFoto.UseVisualStyleBackColor = true;
             this.btnEnviarFoto.Click += new System.EventHandler(this.btnEnviarFoto_Click);
             // 
+            // btnAdicionarFavorito
+            // 
+            this.btnAdicionarFavorito.Location = new System.Drawing.Point(142, 207);
+            this.btnAdicionarFavorito.Name = "btnAdicionarFavorito";
+            this.btnAdicionarFavorito.Size = new System.Drawing.Size(159, 37);
+            this.btnAdicionarFavorito.TabIndex = 19;
+            this.btnAdicionarFavorito.Text = "Adicionar Favorito";
+            this.btnAdicionarFavorito.UseVisualStyleBackColor = true;
+            this.btnAdicionarFavorito.Click += new System.EventHandler(this.btnAdicionarFavorito_Click);
+            // 
+            // btnRemoverFavorito
+            // 
+            this.btnRemoverFavorito.Location = new System.Drawing.Point(307, 207);
+            this.btnRemoverFavorito.Name = "btnRemoverFavorito";
+            this.btnRemoverFavorito.Size = new System.Drawing.Size(159, 37);
+            this.btnRemoverFavorito.TabIndex = 20;
+            this.btnRemoverFavorito.Text = "Remover Favorito";
+            this.btnRemoverFavorito.UseVisualStyleBackColor = true;
+            this.btnRemoverFavorito.Click += new System.EventHandler(this.btnRemoverFavorito_Click);
+            // 
+            // btnBuscarListaCidadesUfs
+            // 
+            this.btnBuscarListaCidadesUfs.Location = new System.Drawing.Point(541, 78);
+            this.btnBuscarListaCidadesUfs.Name = "btnBuscarListaCidadesUfs";
+            this.btnBuscarListaCidadesUfs.Size = new System.Drawing.Size(159, 37);
+            this.btnBuscarListaCidadesUfs.TabIndex = 21;
+            this.btnBuscarListaCidadesUfs.Text = "Buscar Lista Cidades / UFs";
+            this.btnBuscarListaCidadesUfs.UseVisualStyleBackColor = true;
+            this.btnBuscarListaCidadesUfs.Click += new System.EventHandler(this.btnBuscarListaCidadesUfs_Click);
+            // 
+            // btnBuscarCaronaPorEvento
+            // 
+            this.btnBuscarCaronaPorEvento.Location = new System.Drawing.Point(418, 121);
+            this.btnBuscarCaronaPorEvento.Name = "btnBuscarCaronaPorEvento";
+            this.btnBuscarCaronaPorEvento.Size = new System.Drawing.Size(117, 37);
+            this.btnBuscarCaronaPorEvento.TabIndex = 22;
+            this.btnBuscarCaronaPorEvento.Text = "Buscar Carona Por Evento";
+            this.btnBuscarCaronaPorEvento.UseVisualStyleBackColor = true;
+            this.btnBuscarCaronaPorEvento.Click += new System.EventHandler(this.btnBuscarCaronaPorEvento_Click);
+            // 
             // formTeste
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(611, 525);
+            this.ClientSize = new System.Drawing.Size(946, 525);
+            this.Controls.Add(this.btnBuscarCaronaPorEvento);
+            this.Controls.Add(this.btnBuscarListaCidadesUfs);
+            this.Controls.Add(this.btnRemoverFavorito);
+            this.Controls.Add(this.btnAdicionarFavorito);
             this.Controls.Add(this.btnEnviarFoto);
             this.Controls.Add(this.btnExcluirTransporte);
             this.Controls.Add(this.btnBuscarTodosTransportes);
@@ -290,6 +338,10 @@
         private System.Windows.Forms.Button btnBuscarTransporte;
         private System.Windows.Forms.Button btnCadastrarTransporte;
         private System.Windows.Forms.Button btnEnviarFoto;
+        private System.Windows.Forms.Button btnAdicionarFavorito;
+        private System.Windows.Forms.Button btnRemoverFavorito;
+        private System.Windows.Forms.Button btnBuscarListaCidadesUfs;
+        private System.Windows.Forms.Button btnBuscarCaronaPorEvento;
     }
 }
 

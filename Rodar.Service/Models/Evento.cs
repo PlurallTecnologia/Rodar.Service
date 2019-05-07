@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Rodar.Business;
+using Rodar.Service.Providers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -10,6 +12,7 @@ namespace Rodar.Service.Models
         public int idEvento { get; set; }
         public DateTime? dataCriacao { get; set; }
         public int idUsuarioCriacao { get; set; }
+        public string nomeEvento { get; set; }
         public string enderecoRua { get; set; }
         public string enderecoComplemento { get; set; }
         public string enderecoBairro { get; set; }
@@ -26,5 +29,63 @@ namespace Rodar.Service.Models
         public DateTime? dataHoraInicio { get; set; }
         public DateTime? dataHoraTermino { get; set; }
         public string descricaoEvento { get; set; }
+        public bool Favorito { get; set; }
+
+        public static Evento EntityToModel(Domain.Entity.Evento evento)
+        {
+            var appEventoFavorito = new bllEventoUsuarioFavorito(DBRepository.GetEventoUsuarioFavoritoRepository());
+
+            return new Evento()
+            {
+                dataCriacao = evento.DataCriacao,
+                nomeEvento = evento.nomeEvento,
+                dataHoraInicio = evento.dataHoraInicio,
+                dataHoraTermino = evento.dataHoraTermino,
+                descricaoEvento = evento.descricaoEvento,
+                enderecoBairro = evento.enderecoBairro,
+                enderecoCEP = evento.enderecoCEP,
+                enderecoCidade = evento.enderecoCidade,
+                enderecoComplemento = evento.enderecoComplemento,
+                enderecoNumero = evento.enderecoNumero,
+                enderecoRua = evento.enderecoRua,
+                enderecoUF = evento.enderecoUF,
+                idEvento = evento.idEvento,
+                idUsuarioCriacao = evento.idUsuarioCriacao,
+                urlImagem1 = evento.urlImagem1,
+                urlImagem2 = evento.urlImagem2,
+                urlImagem3 = evento.urlImagem3,
+                urlImagem4 = evento.urlImagem4,
+                urlImagem5 = evento.urlImagem5,
+                urlImagemCapa = evento.urlImagemCapa,
+                Favorito = appEventoFavorito.ExisteFavorito(evento.idEvento, Globals.LoggedUserInformation.userId)
+        };
+        }
+
+        public static Domain.Entity.Evento ModelToEntity(Evento evento)
+        {
+            return new Domain.Entity.Evento()
+            {
+                DataCriacao = evento.dataCriacao,
+                nomeEvento = evento.nomeEvento,
+                dataHoraInicio = evento.dataHoraInicio,
+                dataHoraTermino = evento.dataHoraTermino,
+                descricaoEvento = evento.descricaoEvento,
+                enderecoBairro = evento.enderecoBairro,
+                enderecoCEP = evento.enderecoCEP,
+                enderecoCidade = evento.enderecoCidade,
+                enderecoComplemento = evento.enderecoComplemento,
+                enderecoNumero = evento.enderecoNumero,
+                enderecoRua = evento.enderecoRua,
+                enderecoUF = evento.enderecoUF,
+                idEvento = evento.idEvento,
+                idUsuarioCriacao = evento.idUsuarioCriacao,
+                urlImagem1 = evento.urlImagem1,
+                urlImagem2 = evento.urlImagem2,
+                urlImagem3 = evento.urlImagem3,
+                urlImagem4 = evento.urlImagem4,
+                urlImagem5 = evento.urlImagem5,
+                urlImagemCapa = evento.urlImagemCapa
+            };
+        }
     }
 }

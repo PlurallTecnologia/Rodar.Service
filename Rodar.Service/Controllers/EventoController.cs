@@ -1,396 +1,137 @@
-﻿using Newtonsoft.Json;
+﻿using Rodar.Business;
+using Rodar.Service.Globals;
 using Rodar.Service.Models;
 using Rodar.Service.Providers;
 using System;
-using System.Collections.Generic;
-using System.Configuration;
 using System.Data;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Web;
 using System.Web.Http;
 using System.Web.Script.Services;
 
 namespace Rodar.Service.Controllers
 {
+    [Authorize]
     public class EventoController : ApiController
     {
         [HttpPost]
         [ActionName("Cadastrar")]
-        public HttpResponseMessage Cadastrar([System.Web.Http.FromBody] Evento Evento)
+        public HttpResponseMessage Cadastrar([System.Web.Http.FromBody] Evento evento)
         {
-            using (SqlConnection con = DBConnection.GetDBConnection())
+            try
             {
-                string stringSQL = @"INSERT INTO Evento(dataCriacao
-                                                        ,idUsuarioCriacao
-                                                        ,enderecoRua
-                                                        ,enderecoComplemento
-                                                        ,enderecoBairro
-                                                        ,enderecoNumero
-                                                        ,enderecoCEP
-                                                        ,enderecoCidade
-                                                        ,enderecoUF
-                                                        ,urlImagemCapa
-                                                        ,urlImagem1
-                                                        ,urlImagem2
-                                                        ,urlImagem3
-                                                        ,urlImagem4
-                                                        ,urlImagem5
-                                                        ,dataHoraInicio
-                                                        ,dataHoraTermino
-                                                        ,descricaoEvento)
-                                                    VALUES
-                                                        (@dataCriacao
-                                                        ,@idUsuarioCriacao
-                                                        ,@enderecoRua
-                                                        ,@enderecoComplemento
-                                                        ,@enderecoBairro
-                                                        ,@enderecoNumero
-                                                        ,@enderecoCEP
-                                                        ,@enderecoCidade
-                                                        ,@enderecoUF
-                                                        ,@urlImagemCapa
-                                                        ,@urlImagem1
-                                                        ,@urlImagem2
-                                                        ,@urlImagem3
-                                                        ,@urlImagem4
-                                                        ,@urlImagem5
-                                                        ,@dataHoraInicio
-                                                        ,@dataHoraTermino
-                                                        ,@descricaoEvento);
-                                            SET @idEvento = SCOPE_IDENTITY()";
+                var appEvento = new bllEvento(DBRepository.GetEventoRepository());
+                evento.idUsuarioCriacao = LoggedUserInformation.userId;
 
-                SqlCommand cmdInserir = new SqlCommand(stringSQL, con);
+                appEvento.Cadastrar(Evento.ModelToEntity(evento));
 
-                ValidaCampos(ref Evento);
-
-                cmdInserir.Parameters.Add("idEvento", SqlDbType.Int);
-                cmdInserir.Parameters["idEvento"].Direction = ParameterDirection.Output;
-
-                if (Evento.dataCriacao == null)
-                    cmdInserir.Parameters.Add("dataCriacao", SqlDbType.VarChar).Value = DBNull.Value;
-                else
-                    cmdInserir.Parameters.Add("dataCriacao", SqlDbType.VarChar).Value = Evento.dataCriacao;
-
-                cmdInserir.Parameters.Add("idUsuarioCriacao", SqlDbType.Int).Value = Globals.LoggedUserInformation.userId;
-                cmdInserir.Parameters.Add("enderecoRua", SqlDbType.VarChar).Value = Evento.enderecoRua;
-                cmdInserir.Parameters.Add("enderecoComplemento", SqlDbType.VarChar).Value = Evento.enderecoComplemento;
-                cmdInserir.Parameters.Add("enderecoBairro", SqlDbType.VarChar).Value = Evento.enderecoBairro;
-                cmdInserir.Parameters.Add("enderecoNumero", SqlDbType.Int).Value = Evento.enderecoNumero;
-                cmdInserir.Parameters.Add("enderecoCEP", SqlDbType.VarChar).Value = Evento.enderecoCEP;
-                cmdInserir.Parameters.Add("enderecoCidade", SqlDbType.VarChar).Value = Evento.enderecoCidade;
-                cmdInserir.Parameters.Add("enderecoUF", SqlDbType.VarChar).Value = Evento.enderecoUF;
-                cmdInserir.Parameters.Add("urlImagemCapa", SqlDbType.VarChar).Value = Evento.urlImagemCapa;
-                cmdInserir.Parameters.Add("urlImagem1", SqlDbType.VarChar).Value = Evento.urlImagem1;
-                cmdInserir.Parameters.Add("urlImagem2", SqlDbType.VarChar).Value = Evento.urlImagem2;
-                cmdInserir.Parameters.Add("urlImagem3", SqlDbType.VarChar).Value = Evento.urlImagem3;
-                cmdInserir.Parameters.Add("urlImagem4", SqlDbType.VarChar).Value = Evento.urlImagem4;
-                cmdInserir.Parameters.Add("urlImagem5", SqlDbType.VarChar).Value = Evento.urlImagem5;
-
-                if (Evento.dataHoraInicio == null)
-                    cmdInserir.Parameters.Add("dataHoraInicio", SqlDbType.DateTime).Value = DBNull.Value;
-                else
-                    cmdInserir.Parameters.Add("dataHoraInicio", SqlDbType.DateTime).Value = Evento.dataHoraInicio.Value;
-
-                if (Evento.dataHoraTermino == null)
-                    cmdInserir.Parameters.Add("dataHoraTermino", SqlDbType.DateTime).Value = DBNull.Value;
-                else
-                    cmdInserir.Parameters.Add("dataHoraTermino", SqlDbType.DateTime).Value = Evento.dataHoraTermino;
-
-                cmdInserir.Parameters.Add("descricaoEvento", SqlDbType.VarChar).Value = Evento.descricaoEvento;
-
-                try
-                {
-                    con.Open();
-                    cmdInserir.ExecuteNonQuery();
-
-                    return Request.CreateResponse(HttpStatusCode.OK, (int)cmdInserir.Parameters["idEvento"].Value);
-                }
-                catch (Exception Ex)
-                {
-                    return Request.CreateResponse(HttpStatusCode.BadRequest, Ex.Message);
-                }
-                finally
-                {
-                    con.Close();
-                }
+                return Request.CreateResponse(HttpStatusCode.OK, evento);
+            }
+            catch (Exception Ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, Ex.Message);
             }
         }
 
         [HttpPost]
         [ActionName("Atualizar")]
-        public HttpResponseMessage Atualizar([System.Web.Http.FromBody] Evento Evento)
+        public HttpResponseMessage Atualizar([System.Web.Http.FromBody] Evento evento)
         {
-            using (SqlConnection con = DBConnection.GetDBConnection())
+            try
             {
-                string stringSQL = @"UPDATE Evento
-                                       SET dataCriacao = @dataCriacao
-                                          ,enderecoRua = @enderecoRua
-                                          ,enderecoComplemento = @enderecoComplemento
-                                          ,enderecoBairro = @enderecoBairro
-                                          ,enderecoNumero = @enderecoNumero
-                                          ,enderecoCEP = @enderecoCEP
-                                          ,enderecoCidade = @enderecoCidade
-                                          ,enderecoUF = @enderecoUF
-                                          ,urlImagemCapa = @urlImagemCapa
-                                          ,urlImagem1 = @urlImagem1
-                                          ,urlImagem2 = @urlImagem2
-                                          ,urlImagem3 = @urlImagem3
-                                          ,urlImagem4 = @urlImagem4
-                                          ,urlImagem5 = @urlImagem5
-                                          ,dataHoraInicio = @dataHoraInicio
-                                          ,dataHoraTermino = @dataHoraTermino
-                                          ,descricaoEvento = @descricaoEvento
-                                     WHERE idEvento = @idEvento";
+                var appEvento = new bllEvento(DBRepository.GetEventoRepository());
 
-                SqlCommand cmdAtualizar = new SqlCommand(stringSQL, con);
+                appEvento.Atualizar(Evento.ModelToEntity(evento));
 
-                ValidaCampos(ref Evento);
-
-                cmdAtualizar.Parameters.Add("idEvento", SqlDbType.Int).Value = Evento.idEvento;
-
-                if (Evento.dataCriacao == null)
-                    cmdAtualizar.Parameters.Add("dataCriacao", SqlDbType.VarChar).Value = DBNull.Value;
-                else
-                    cmdAtualizar.Parameters.Add("dataCriacao", SqlDbType.VarChar).Value = Evento.dataCriacao;
-
-                cmdAtualizar.Parameters.Add("enderecoRua", SqlDbType.VarChar).Value = Evento.enderecoRua;
-                cmdAtualizar.Parameters.Add("enderecoComplemento", SqlDbType.VarChar).Value = Evento.enderecoComplemento;
-                cmdAtualizar.Parameters.Add("enderecoBairro", SqlDbType.VarChar).Value = Evento.enderecoBairro;
-                cmdAtualizar.Parameters.Add("enderecoNumero", SqlDbType.Int).Value = Evento.enderecoNumero;
-                cmdAtualizar.Parameters.Add("enderecoCEP", SqlDbType.VarChar).Value = Evento.enderecoCEP;
-                cmdAtualizar.Parameters.Add("enderecoCidade", SqlDbType.VarChar).Value = Evento.enderecoCidade;
-                cmdAtualizar.Parameters.Add("enderecoUF", SqlDbType.VarChar).Value = Evento.enderecoUF;
-                cmdAtualizar.Parameters.Add("urlImagemCapa", SqlDbType.VarChar).Value = Evento.urlImagemCapa;
-                cmdAtualizar.Parameters.Add("urlImagem1", SqlDbType.VarChar).Value = Evento.urlImagem1;
-                cmdAtualizar.Parameters.Add("urlImagem2", SqlDbType.VarChar).Value = Evento.urlImagem2;
-                cmdAtualizar.Parameters.Add("urlImagem3", SqlDbType.VarChar).Value = Evento.urlImagem3;
-                cmdAtualizar.Parameters.Add("urlImagem4", SqlDbType.VarChar).Value = Evento.urlImagem4;
-                cmdAtualizar.Parameters.Add("urlImagem5", SqlDbType.VarChar).Value = Evento.urlImagem5;
-
-                if (Evento.dataHoraInicio == null)
-                    cmdAtualizar.Parameters.Add("dataNascimento", SqlDbType.DateTime).Value = DBNull.Value;
-                else
-                    cmdAtualizar.Parameters.Add("dataHoraInicio", SqlDbType.DateTime).Value = Evento.dataHoraInicio.Value;
-
-                if (Evento.dataHoraTermino == null)
-                    cmdAtualizar.Parameters.Add("dataHoraTermino", SqlDbType.DateTime).Value = DBNull.Value;
-                else
-                    cmdAtualizar.Parameters.Add("dataHoraTermino", SqlDbType.DateTime).Value = Evento.dataHoraTermino;
-
-                cmdAtualizar.Parameters.Add("descricaoEvento", SqlDbType.VarChar).Value = Evento.descricaoEvento;
-
-                try
-                {
-                    con.Open();
-                    cmdAtualizar.ExecuteNonQuery();
-
-                    return Request.CreateResponse(HttpStatusCode.OK);
-                }
-                catch (Exception Ex)
-                {
-                    return Request.CreateResponse(HttpStatusCode.BadRequest, Ex.Message);
-                }
-                finally
-                {
-                    con.Close();
-                }
+                return Request.CreateResponse(HttpStatusCode.OK, evento);
+            }
+            catch (Exception Ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, Ex.Message);
             }
         }
 
         [HttpGet]
         [ActionName("Buscar")]
-        public HttpResponseMessage Buscar(int id)
+        public HttpResponseMessage Buscar(int idEvento)
         {
-            Evento evento = new Evento();
-
-            using (SqlConnection con = DBConnection.GetDBConnection())
+            try
             {
-                string stringSQL = @"SELECT *
-                                        FROM Evento
-                                        WHERE idEvento = @idEvento";
-
-                SqlCommand cmdSelecionar = new SqlCommand(stringSQL, con);
-
-                cmdSelecionar.Parameters.Add("idEvento", SqlDbType.Int).Value = id;
-
-                try
-                {
-                    con.Open();
-                    SqlDataReader drSelecao = cmdSelecionar.ExecuteReader();
-
-                    if (drSelecao.Read())
-                        PreencheCampos(drSelecao, ref evento);
-                }
-                catch (Exception Ex)
-                {
-                    return Request.CreateResponse(HttpStatusCode.BadRequest, Ex.Message);
-                }
-                finally
-                {
-                    con.Close();
-                }
+                var appEvento = new bllEvento(DBRepository.GetEventoRepository());
+                
+                return Request.CreateResponse(HttpStatusCode.OK, Evento.EntityToModel(appEvento.Buscar(idEvento)));
             }
-
-            return Request.CreateResponse(HttpStatusCode.OK, evento);
+            catch (Exception Ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, Ex.Message);
+            }
         }
 
         [HttpDelete]
         [ActionName("Excluir")]
-        public HttpResponseMessage Excluir(int id)
+        public HttpResponseMessage Excluir(int idEvento)
         {
-            using (SqlConnection con = DBConnection.GetDBConnection())
+            try
             {
-                string stringSQL = @"DELETE FROM Evento
-                                        WHERE idEvento = @idEvento";
-
-                SqlCommand cmdDeletar = new SqlCommand(stringSQL, con);
-
-                cmdDeletar.Parameters.Add("idEvento", SqlDbType.Int).Value = id;
-
-                try
-                {
-                    con.Open();
-
-                    return Request.CreateResponse(HttpStatusCode.OK, (int)cmdDeletar.ExecuteNonQuery());
-                }
-                catch (Exception Ex)
-                {
-                    return Request.CreateResponse(HttpStatusCode.BadRequest, Ex.Message);
-                }
-                finally
-                {
-                    con.Close();
-                }
+                var appEvento = new bllEvento(DBRepository.GetEventoRepository());
+                return Request.CreateResponse(HttpStatusCode.OK, appEvento.Excluir(idEvento));
+            }
+            catch (Exception Ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, Ex.Message);
             }
         }
 
         [HttpGet]
         [ActionName("BuscarTodos")]
         [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
-        public HttpResponseMessage BuscarTodos()
+        public HttpResponseMessage BuscarTodos(bool somenteMeusEventos = false, bool somenteMeusFavoritos = false)
         {
-            List<Evento> eventos = new List<Evento>();
-
-            using (SqlConnection con = DBConnection.GetDBConnection())
+            try
             {
-                string stringSQL = @"SELECT *
-                                        FROM Evento
-                                        WHERE idUsuarioCriacao = @idUsuarioCriacao";
+                var appEvento = new bllEvento(DBRepository.GetEventoRepository());
+                var appEventoFavorito = new bllEventoUsuarioFavorito(DBRepository.GetEventoUsuarioFavoritoRepository());
 
-                SqlCommand cmdSelecionar = new SqlCommand(stringSQL, con);
+                var idUsuario = (somenteMeusEventos ? Globals.LoggedUserInformation.userId : 0);
+                var listaEventos = appEvento
+                    .BuscarPorUsuario(idUsuario)
+                    .Select(evento => Evento.EntityToModel(evento))
+                    .ToList();
 
-                cmdSelecionar.Parameters.Add("idUsuarioCriacao", SqlDbType.Int).Value = Globals.LoggedUserInformation.userId;
+                if (somenteMeusFavoritos)
+                    listaEventos = listaEventos.Where(evento => evento.Favorito).ToList();
 
-                try
-                {
-                    con.Open();
-                    SqlDataReader drSelecao = cmdSelecionar.ExecuteReader();
-
-                    while (drSelecao.Read())
-                    {
-                        Evento evento = new Evento();
-
-                        PreencheCampos(drSelecao, ref evento);
-
-                        eventos.Add(evento);
-                    }
-                }
-                catch (Exception Ex)
-                {
-                    return Request.CreateResponse(HttpStatusCode.BadRequest, Ex.Message);
-                }
-                finally
-                {
-                    con.Close();
-                }
+                return Request.CreateResponse(HttpStatusCode.OK, listaEventos);
             }
-
-            return Request.CreateResponse(HttpStatusCode.OK, eventos);
+            catch (Exception Ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, Ex.Message);
+            }
         }
 
-        private static void PreencheCampos(SqlDataReader drSelecao, ref Evento evento)
+        [HttpGet]
+        [ActionName("BuscarListaCidadeUfsExistentesEmEventos")]
+        [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
+        public HttpResponseMessage BuscarListaCidadeUfsExistentesEmEventos()
         {
-            if (drSelecao["idEvento"] != DBNull.Value)
-                evento.idEvento = Convert.ToInt32(drSelecao["idEvento"].ToString());
+            try
+            {
+                bllEvento appEvento = new bllEvento(DBRepository.GetEventoRepository());
 
-            if (drSelecao["dataCriacao"] != DBNull.Value)
-                evento.dataCriacao = Convert.ToDateTime(drSelecao["dataCriacao"]);
-            else
-                evento.dataCriacao = null;
+                var listaCidadesUfs = appEvento
+                    .BuscarTodos()
+                    .Select(evento => new { evento.enderecoCidade, evento.enderecoUF })
+                    .Distinct()
+                    .ToList();
 
-            if (drSelecao["idUsuarioCriacao"] != DBNull.Value)
-                evento.idUsuarioCriacao = Convert.ToInt32(drSelecao["idUsuarioCriacao"].ToString());
-
-            if (drSelecao["enderecoRua"] != DBNull.Value)
-                evento.enderecoRua = drSelecao["enderecoRua"].ToString();
-
-            if (drSelecao["enderecoComplemento"] != DBNull.Value)
-                evento.enderecoComplemento = drSelecao["enderecoComplemento"].ToString();
-
-            if (drSelecao["enderecoBairro"] != DBNull.Value)
-                evento.enderecoBairro = drSelecao["enderecoBairro"].ToString();
-
-            if (drSelecao["enderecoNumero"] != DBNull.Value)
-                evento.enderecoNumero = Convert.ToInt32(drSelecao["enderecoNumero"].ToString());
-
-            if (drSelecao["enderecoCEP"] != DBNull.Value)
-                evento.enderecoCEP = drSelecao["enderecoCEP"].ToString();
-
-            if (drSelecao["enderecoCidade"] != DBNull.Value)
-                evento.enderecoCidade = drSelecao["enderecoCidade"].ToString();
-
-            if (drSelecao["enderecoUF"] != DBNull.Value)
-                evento.enderecoUF = drSelecao["enderecoUF"].ToString();
-
-            if (drSelecao["urlImagemCapa"] != DBNull.Value)
-                evento.urlImagemCapa = drSelecao["urlImagemCapa"].ToString();
-
-            if (drSelecao["urlImagem1"] != DBNull.Value)
-                evento.urlImagem1 = drSelecao["urlImagem1"].ToString();
-
-            if (drSelecao["urlImagem2"] != DBNull.Value)
-                evento.urlImagem2 = drSelecao["urlImagem2"].ToString();
-
-            if (drSelecao["urlImagem3"] != DBNull.Value)
-                evento.urlImagem3 = drSelecao["urlImagem3"].ToString();
-
-            if (drSelecao["urlImagem4"] != DBNull.Value)
-                evento.urlImagem4 = drSelecao["urlImagem4"].ToString();
-
-            if (drSelecao["urlImagem5"] != DBNull.Value)
-                evento.urlImagem5 = drSelecao["urlImagem5"].ToString();
-
-            if (drSelecao["dataHoraInicio"] != DBNull.Value)
-                evento.dataHoraInicio = Convert.ToDateTime(drSelecao["dataHoraInicio"]);
-            else
-                evento.dataHoraInicio = null;
-
-            if (drSelecao["dataHoraTermino"] != DBNull.Value)
-                evento.dataHoraTermino = Convert.ToDateTime(drSelecao["dataHoraTermino"]);
-            else
-                evento.dataHoraTermino = null;
-
-            if (drSelecao["descricaoEvento"] != DBNull.Value)
-                evento.descricaoEvento = drSelecao["descricaoEvento"].ToString();
-        }
-
-        private static void ValidaCampos(ref Evento evento)
-        {
-            if (String.IsNullOrEmpty(evento.enderecoRua)) { evento.enderecoRua = String.Empty; }
-            if (String.IsNullOrEmpty(evento.enderecoComplemento)) { evento.enderecoComplemento = String.Empty; }
-            if (String.IsNullOrEmpty(evento.enderecoBairro)) { evento.enderecoBairro = String.Empty; }
-            if (String.IsNullOrEmpty(evento.enderecoCEP)) { evento.enderecoCEP = String.Empty; }
-            if (String.IsNullOrEmpty(evento.enderecoCidade)) { evento.enderecoCidade = String.Empty; }
-            if (String.IsNullOrEmpty(evento.enderecoUF)) { evento.enderecoUF = String.Empty; }
-            if (String.IsNullOrEmpty(evento.urlImagemCapa)) { evento.urlImagemCapa = String.Empty; }
-            if (String.IsNullOrEmpty(evento.urlImagem1)) { evento.urlImagem1 = String.Empty; }
-            if (String.IsNullOrEmpty(evento.urlImagem2)) { evento.urlImagem2 = String.Empty; }
-            if (String.IsNullOrEmpty(evento.urlImagem3)) { evento.urlImagem3 = String.Empty; }
-            if (String.IsNullOrEmpty(evento.urlImagem4)) { evento.urlImagem4 = String.Empty; }
-            if (String.IsNullOrEmpty(evento.urlImagem5)) { evento.urlImagem5 = String.Empty; }
-            if (String.IsNullOrEmpty(evento.descricaoEvento)) { evento.descricaoEvento = String.Empty; }
+                return Request.CreateResponse(HttpStatusCode.OK, listaCidadesUfs);
+            }
+            catch (Exception Ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, Ex.Message);
+            }
         }
     }
 }

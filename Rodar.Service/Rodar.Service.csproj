@@ -207,12 +207,16 @@
     <Compile Include="Controllers\EventoCaronaController.cs" />
     <Compile Include="Controllers\EventoController.cs" />
     <Compile Include="Controllers\EventoTransporteController.cs" />
+    <Compile Include="Controllers\EventoUsuarioFavoritoController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\UsuarioController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\EventoCaronaPassageiro.cs" />
+    <Compile Include="Models\EventoTransportePassageiro.cs" />
     <Compile Include="Providers\DBConnection.cs" />
+    <Compile Include="Providers\DBRepositoty.cs" />
     <Compile Include="Providers\LoggedUserInformation.cs" />
     <Compile Include="Models\Evento.cs" />
     <Compile Include="Models\EventoCarona.cs" />
@@ -277,7 +281,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Log\" />
     <Folder Include="UserImages\" />
+    <Folder Include="Views\EventoUsuarioFavorito\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
@@ -291,6 +297,20 @@
   <ItemGroup>
     <None Include="packages.config" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Rodar.Business\Rodar.Business.csproj">
+      <Project>{9611a7d6-9cec-4080-991e-4c2b0109da2c}</Project>
+      <Name>Rodar.Business</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rodar.Domain\Rodar.Domain.csproj">
+      <Project>{41753b92-595b-4c64-b39f-c21e6aa05473}</Project>
+      <Name>Rodar.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rodar.Repository.SqlServer\Rodar.Repository.SqlServer.csproj">
+      <Project>{fd803927-e891-40d8-8944-331ef71acad0}</Project>
+      <Name>Rodar.Repository.SqlServer</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

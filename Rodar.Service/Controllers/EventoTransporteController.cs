@@ -1,4 +1,6 @@
 ﻿using Newtonsoft.Json;
+using Rodar.Business;
+using Rodar.Service.Globals;
 using Rodar.Service.Models;
 using Rodar.Service.Providers;
 using System;
@@ -20,73 +22,19 @@ namespace Rodar.Service.Controllers
         [ActionName("Cadastrar")]
         public HttpResponseMessage Cadastrar([System.Web.Http.FromBody] EventoTransporte eventoTransporte)
         {
-            using (SqlConnection con = DBConnection.GetDBConnection())
+            try
             {
-                string stringSQL = @"INSERT INTO EventoTransporte
-                                                (idEvento
-                                                ,idUsuarioTransportador
-                                                ,quantidadeVagas
-                                                ,enderecoPartidaRua
-                                                ,enderecoPartidaComplemento
-                                                ,enderecoPartidaBairro
-                                                ,enderecoPartidaNumero
-                                                ,enderecoPartidaCEP
-                                                ,enderecoPartidaCidade
-                                                ,enderecoPartidaUF
-                                                ,valorParticipacao
-                                                ,Mensagem)
-                                            VALUES
-                                                (@idEvento
-                                                ,@idUsuarioTransportador
-                                                ,@quantidadeVagas
-                                                ,@enderecoPartidaRua
-                                                ,@enderecoPartidaComplemento
-                                                ,@enderecoPartidaBairro
-                                                ,@enderecoPartidaNumero
-                                                ,@enderecoPartidaCEP
-                                                ,@enderecoPartidaCidade
-                                                ,@enderecoPartidaUF
-                                                ,@valorParticipacao
-                                                ,@Mensagem);
-                                                SET @idEventoTransporte = SCOPE_IDENTITY()";
+                var appEventoTransporte = new bllEventoTransporte(DBRepository.GetEventoTransporteRepository());
+                var eventoTransporteEntity = EventoTransporte.ModelToEntity(eventoTransporte);
+                eventoTransporteEntity.idUsuarioTransportador = LoggedUserInformation.userId;
 
-                SqlCommand cmdInserir = new SqlCommand(stringSQL, con);
+                appEventoTransporte.Cadastrar(eventoTransporteEntity);
 
-                ValidaCampos(ref eventoTransporte);
-
-                cmdInserir.Parameters.Add("idEventoTransporte", SqlDbType.Int);
-                cmdInserir.Parameters["idEventoTransporte"].Direction = ParameterDirection.Output;
-
-                cmdInserir.Parameters.Add("idEvento", SqlDbType.Int).Value = eventoTransporte.idEvento;
-                cmdInserir.Parameters.Add("idUsuarioTransportador", SqlDbType.Int).Value = eventoTransporte.idUsuarioTransportador;
-
-                cmdInserir.Parameters.Add("quantidadeVagas", SqlDbType.Int).Value = eventoTransporte.quantidadeVagas;
-
-                cmdInserir.Parameters.Add("enderecoPartidaRua", SqlDbType.VarChar).Value = eventoTransporte.enderecoPartidaRua;
-                cmdInserir.Parameters.Add("enderecoPartidaComplemento", SqlDbType.VarChar).Value = eventoTransporte.enderecoPartidaComplemento;
-                cmdInserir.Parameters.Add("enderecoPartidaBairro", SqlDbType.VarChar).Value = eventoTransporte.enderecoPartidaBairro;
-                cmdInserir.Parameters.Add("enderecoPartidaNumero", SqlDbType.Int).Value = eventoTransporte.enderecoPartidaNumero;
-                cmdInserir.Parameters.Add("enderecoPartidaCEP", SqlDbType.VarChar).Value = eventoTransporte.enderecoPartidaCEP;
-                cmdInserir.Parameters.Add("enderecoPartidaCidade", SqlDbType.VarChar).Value = eventoTransporte.enderecoPartidaCidade;
-                cmdInserir.Parameters.Add("enderecoPartidaUF", SqlDbType.VarChar).Value = eventoTransporte.enderecoPartidaUF;
-                cmdInserir.Parameters.Add("valorParticipacao", SqlDbType.Decimal).Value = eventoTransporte.valorParticipacao;
-                cmdInserir.Parameters.Add("Mensagem", SqlDbType.VarChar).Value = eventoTransporte.Mensagem;
-
-                try
-                {
-                    con.Open();
-                    cmdInserir.ExecuteNonQuery();
-
-                    return Request.CreateResponse(HttpStatusCode.OK, (int)cmdInserir.Parameters["idEventoTransporte"].Value);
-                }
-                catch (Exception Ex)
-                {
-                    return Request.CreateResponse(HttpStatusCode.BadRequest, Ex.Message);
-                }
-                finally
-                {
-                    con.Close();
-                }
+                return Request.CreateResponse(HttpStatusCode.OK, eventoTransporteEntity);
+            }
+            catch (Exception Ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, Ex.Message);
             }
         }
 
@@ -94,126 +42,51 @@ namespace Rodar.Service.Controllers
         [ActionName("Atualizar")]
         public HttpResponseMessage Atualizar([System.Web.Http.FromBody] EventoTransporte eventoTransporte)
         {
-            using (SqlConnection con = DBConnection.GetDBConnection())
+            try
             {
-                string stringSQL = @"UPDATE EventoTransporte
-                                       SET idEvento = idEvento
-                                          ,idUsuarioMotorista = idUsuarioMotorista
-                                          ,quantidadeVagas = quantidadeVagas
-                                          ,enderecoPartidaRua = enderecoPartidaRua
-                                          ,enderecoPartidaComplemento = enderecoPartidaComplemento
-                                          ,enderecoPartidaBairro = enderecoPartidaBairro
-                                          ,enderecoPartidaNumero = enderecoPartidaNumero
-                                          ,enderecoPartidaCEP = enderecoPartidaCEP
-                                          ,enderecoPartidaCidade = enderecoPartidaCidade
-                                          ,enderecoPartidaUF = enderecoPartidaUF
-                                          ,valorParticipacao = valorParticipacao
-                                          ,Mensagem = Mensagem
-                                     WHERE idEvento = @idEvento";
+                var appEventoTransporte = new bllEventoTransporte(DBRepository.GetEventoTransporteRepository());
+                var eventoTransporteEntity = EventoTransporte.ModelToEntity(eventoTransporte);
+                eventoTransporteEntity.idUsuarioTransportador = LoggedUserInformation.userId;
 
-                SqlCommand cmdAtualizar = new SqlCommand(stringSQL, con);
+                appEventoTransporte.Atualizar(eventoTransporteEntity);
 
-                ValidaCampos(ref eventoTransporte);
-
-                cmdAtualizar.Parameters.Add("idEventoTransporte", SqlDbType.Int).Value = eventoTransporte.idEventoTransporte;
-
-                cmdAtualizar.Parameters.Add("idEvento", SqlDbType.Int).Value = eventoTransporte.idEvento;
-                cmdAtualizar.Parameters.Add("idUsuarioTransportador", SqlDbType.Int).Value = eventoTransporte.idUsuarioTransportador;
-
-                cmdAtualizar.Parameters.Add("quantidadeVagas", SqlDbType.Int).Value = eventoTransporte.quantidadeVagas;
-
-                cmdAtualizar.Parameters.Add("enderecoPartidaRua", SqlDbType.VarChar).Value = eventoTransporte.enderecoPartidaRua;
-                cmdAtualizar.Parameters.Add("enderecoPartidaComplemento", SqlDbType.VarChar).Value = eventoTransporte.enderecoPartidaComplemento;
-                cmdAtualizar.Parameters.Add("enderecoPartidaBairro", SqlDbType.VarChar).Value = eventoTransporte.enderecoPartidaBairro;
-                cmdAtualizar.Parameters.Add("enderecoPartidaNumero", SqlDbType.Int).Value = eventoTransporte.enderecoPartidaNumero;
-                cmdAtualizar.Parameters.Add("enderecoPartidaCEP", SqlDbType.VarChar).Value = eventoTransporte.enderecoPartidaCEP;
-                cmdAtualizar.Parameters.Add("enderecoPartidaCidade", SqlDbType.VarChar).Value = eventoTransporte.enderecoPartidaCidade;
-                cmdAtualizar.Parameters.Add("enderecoPartidaUF", SqlDbType.VarChar).Value = eventoTransporte.enderecoPartidaUF;
-                cmdAtualizar.Parameters.Add("valorParticipacao", SqlDbType.Decimal).Value = eventoTransporte.valorParticipacao;
-                cmdAtualizar.Parameters.Add("Mensagem", SqlDbType.VarChar).Value = eventoTransporte.Mensagem;
-
-                try
-                {
-                    con.Open();
-                    cmdAtualizar.ExecuteNonQuery();
-
-                    return Request.CreateResponse(HttpStatusCode.OK);
-                }
-                catch (Exception Ex)
-                {
-                    return Request.CreateResponse(HttpStatusCode.BadRequest, Ex.Message);
-                }
-                finally
-                {
-                    con.Close();
-                }
+                return Request.CreateResponse(HttpStatusCode.OK);
+            }
+            catch (Exception Ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, Ex.Message);
             }
         }
 
         [HttpGet]
         [ActionName("Buscar")]
-        public HttpResponseMessage Buscar(int id)
+        public HttpResponseMessage Buscar(int idEventoTransporte)
         {
-            EventoTransporte eventoTransporte = new EventoTransporte();
-
-            using (SqlConnection con = DBConnection.GetDBConnection())
+            try
             {
-                string stringSQL = @"SELECT *
-                                        FROM EventoTransporte
-                                        WHERE idEventoTransporte = @idEventoTransporte";
+                var appEventoTransporte = new bllEventoTransporte(DBRepository.GetEventoTransporteRepository());
 
-                SqlCommand cmdSelecionar = new SqlCommand(stringSQL, con);
-
-                cmdSelecionar.Parameters.Add("idEventoTransporte", SqlDbType.Int).Value = id;
-
-                try
-                {
-                    con.Open();
-                    SqlDataReader drSelecao = cmdSelecionar.ExecuteReader();
-
-                    if (drSelecao.Read())
-                        PreencheCampos(drSelecao, ref eventoTransporte);
-                }
-                catch (Exception Ex)
-                {
-                    return Request.CreateResponse(HttpStatusCode.BadRequest, Ex.Message);
-                }
-                finally
-                {
-                    con.Close();
-                }
+                return Request.CreateResponse(HttpStatusCode.OK, EventoTransporte.EntityToModel(appEventoTransporte.Buscar(idEventoTransporte)));
             }
-
-            return Request.CreateResponse(HttpStatusCode.OK, eventoTransporte);
+            catch (Exception Ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, Ex.Message);
+            }
         }
 
         [HttpDelete]
         [ActionName("Excluir")]
-        public HttpResponseMessage Excluir(int id)
+        public HttpResponseMessage Excluir(int idEventoTransporte)
         {
-            using (SqlConnection con = DBConnection.GetDBConnection())
+            try
             {
-                string stringSQL = @"DELETE FROM EventoTransporte
-                                        WHERE idEventoTransporte = @idEventoTransporte";
+                var appEventoTransporte = new bllEventoTransporte(DBRepository.GetEventoTransporteRepository());
 
-                SqlCommand cmdDeletar = new SqlCommand(stringSQL, con);
-
-                cmdDeletar.Parameters.Add("idEventoTransporte", SqlDbType.Int).Value = id;
-
-                try
-                {
-                    con.Open();
-
-                    return Request.CreateResponse(HttpStatusCode.OK, (int)cmdDeletar.ExecuteNonQuery());
-                }
-                catch (Exception Ex)
-                {
-                    return Request.CreateResponse(HttpStatusCode.BadRequest, Ex.Message);
-                }
-                finally
-                {
-                    con.Close();
-                }
+                return Request.CreateResponse(HttpStatusCode.OK, appEventoTransporte.Excluir(idEventoTransporte));
+            }
+            catch (Exception Ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, Ex.Message);
             }
         }
 
@@ -222,93 +95,68 @@ namespace Rodar.Service.Controllers
         [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
         public HttpResponseMessage BuscarTodos()
         {
-            List<EventoTransporte> eventoTransportes = new List<EventoTransporte>();
+            var appEventoTransporte = new bllEventoTransporte(DBRepository.GetEventoTransporteRepository());
 
-            using (SqlConnection con = DBConnection.GetDBConnection())
+            var listaEventos = appEventoTransporte
+                .BuscarTodos()
+                .Where(le => le.idUsuarioTransportador == LoggedUserInformation.userId)
+                .Select(eventoTransporte => EventoTransporte.EntityToModel(eventoTransporte))
+                .ToList();
+
+            return Request.CreateResponse(HttpStatusCode.OK, listaEventos);
+        }
+
+        [HttpGet]
+        [ActionName("BuscarPorEvento")]
+        [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
+        public HttpResponseMessage BuscarPorEvento(int idEvento)
+        {
+            var appEventoTransporte = new bllEventoTransporte(DBRepository.GetEventoTransporteRepository());
+
+            var listaEventos = appEventoTransporte
+                .BuscarPorEvento(idEvento)
+                .Select(eventoTransporte => EventoTransporte.EntityToModel(eventoTransporte))
+                .ToList();
+
+            return Request.CreateResponse(HttpStatusCode.OK, listaEventos);
+        }
+
+        [HttpPost]
+        [ActionName("AdicionarParticipacaoTransporte")]
+        public HttpResponseMessage AdicionarParticipacaoTransporte(int idEventoTransporte)
+        {
+            try
             {
-                string stringSQL = @"SELECT *
-                                        FROM EventoTransporte";
+                var appEventoTransportePassageiro = new bllEventoTransportePassageiro(DBRepository.GetEventoTransportePassageiroRepository());
+                var eventoTransporteModel = new EventoTransportePassageiro();
 
-                SqlCommand cmdSelecionar = new SqlCommand(stringSQL, con);
+                eventoTransporteModel.idUsuarioPassageiro = LoggedUserInformation.userId;
+                eventoTransporteModel.idEventoTransporte = idEventoTransporte;
 
-                try
-                {
-                    con.Open();
-                    SqlDataReader drSelecao = cmdSelecionar.ExecuteReader();
+                appEventoTransportePassageiro.Cadastrar(EventoTransportePassageiro.ModelToEntity(eventoTransporteModel));
 
-                    while (drSelecao.Read())
-                    {
-                        EventoTransporte eventoTransporte = new EventoTransporte();
-
-                        PreencheCampos(drSelecao, ref eventoTransporte);
-
-                        eventoTransportes.Add(eventoTransporte);
-                    }
-                }
-                catch (Exception Ex)
-                {
-                    return Request.CreateResponse(HttpStatusCode.BadRequest, Ex.Message);
-                }
-                finally
-                {
-                    con.Close();
-                }
+                return Request.CreateResponse(HttpStatusCode.OK, eventoTransporteModel);
             }
-
-            return Request.CreateResponse(HttpStatusCode.OK, eventoTransportes);
+            catch (Exception Ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, Ex.Message);
+            }
         }
 
-        private static void PreencheCampos(SqlDataReader drSelecao, ref EventoTransporte eventoTransporte)
+        [HttpDelete]
+        [ActionName("RemoverParticipacaoTransporte")]
+        public HttpResponseMessage RemoverParticipacaoTransporte(int idEventoTransporte)
         {
-            if (drSelecao["idEventoTransporte"] != DBNull.Value)
-                eventoTransporte.idEventoTransporte = Convert.ToInt32(drSelecao["idEventoTransporte"].ToString());
+            try
+            {
+                var appEventoTransportePassageiro = new bllEventoTransportePassageiro(DBRepository.GetEventoTransportePassageiroRepository());
 
-            if (drSelecao["idEvento"] != DBNull.Value)
-                eventoTransporte.idEvento = Convert.ToInt32(drSelecao["idEvento"].ToString());
-
-            if (drSelecao["idUsuarioTransportador"] != DBNull.Value)
-                eventoTransporte.idUsuarioTransportador = Convert.ToInt32(drSelecao["idUsuarioTransportador"].ToString());
-
-            if (drSelecao["quantidadeVagas"] != DBNull.Value)
-                eventoTransporte.quantidadeVagas = Convert.ToInt32(drSelecao["quantidadeVagas"].ToString());
-
-            if (drSelecao["enderecoPartidaRua"] != DBNull.Value)
-                eventoTransporte.enderecoPartidaRua = drSelecao["enderecoPartidaRua"].ToString();
-
-            if (drSelecao["enderecoPartidaComplemento"] != DBNull.Value)
-                eventoTransporte.enderecoPartidaComplemento = drSelecao["enderecoPartidaComplemento"].ToString();
-
-            if (drSelecao["enderecoPartidaBairro"] != DBNull.Value)
-                eventoTransporte.enderecoPartidaBairro = drSelecao["enderecoPartidaBairro"].ToString();
-
-            if (drSelecao["enderecoPartidaNumero"] != DBNull.Value)
-                eventoTransporte.enderecoPartidaNumero = Convert.ToInt32(drSelecao["enderecoPartidaNumero"].ToString());
-
-            if (drSelecao["enderecoPartidaCEP"] != DBNull.Value)
-                eventoTransporte.enderecoPartidaCEP = drSelecao["enderecoPartidaCEP"].ToString();
-
-            if (drSelecao["enderecoPartidaCidade"] != DBNull.Value)
-                eventoTransporte.enderecoPartidaCidade = drSelecao["enderecoPartidaCidade"].ToString();
-
-            if (drSelecao["enderecoPartidaUF"] != DBNull.Value)
-                eventoTransporte.enderecoPartidaUF = drSelecao["enderecoPartidaUF"].ToString();
-
-            if (drSelecao["valorParticipacao"] != DBNull.Value)
-                eventoTransporte.valorParticipacao = Convert.ToDecimal(drSelecao["valorParticipacao"].ToString());
-
-            if (drSelecao["Mensagem"] != DBNull.Value)
-                eventoTransporte.Mensagem = drSelecao["Mensagem"].ToString();
-        }
-
-        private static void ValidaCampos(ref EventoTransporte eventoTransporte)
-        {
-            if (String.IsNullOrEmpty(eventoTransporte.enderecoPartidaRua)) { eventoTransporte.enderecoPartidaRua = String.Empty; }
-            if (String.IsNullOrEmpty(eventoTransporte.enderecoPartidaComplemento)) { eventoTransporte.enderecoPartidaComplemento = String.Empty; }
-            if (String.IsNullOrEmpty(eventoTransporte.enderecoPartidaBairro)) { eventoTransporte.enderecoPartidaBairro = String.Empty; }
-            if (String.IsNullOrEmpty(eventoTransporte.enderecoPartidaCEP)) { eventoTransporte.enderecoPartidaCEP = String.Empty; }
-            if (String.IsNullOrEmpty(eventoTransporte.enderecoPartidaCidade)) { eventoTransporte.enderecoPartidaCidade = String.Empty; }
-            if (String.IsNullOrEmpty(eventoTransporte.enderecoPartidaUF)) { eventoTransporte.enderecoPartidaUF = String.Empty; }
-            if (String.IsNullOrEmpty(eventoTransporte.Mensagem)) { eventoTransporte.Mensagem = String.Empty; }
+                return Request.CreateResponse(HttpStatusCode.OK, appEventoTransportePassageiro.Excluir(idEventoTransporte, LoggedUserInformation.userId));
+            }
+            catch (Exception Ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, Ex.Message);
+            }
         }
     }
 }

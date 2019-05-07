@@ -259,7 +259,7 @@ namespace TestApi
                 client.DefaultRequestHeaders.Authorization =
                     new AuthenticationHeaderValue("Bearer", Authentication.access_token);
 
-                var response = client.GetAsync("api/Evento/BuscarTodos").Result;
+                var response = client.GetAsync("api/Evento/BuscarTodos?somenteMeusEventos=true?somenteMeusFavoritos=true").Result;
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -600,6 +600,97 @@ namespace TestApi
                 }
 
                 var k = response.Content.ReadAsStringAsync().Result;
+            }
+        }
+
+        private void btnAdicionarFavorito_Click(object sender, EventArgs e)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://localhost:50081");
+                client.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", Authentication.access_token);
+
+                List<KeyValuePair<string, string>> pairs = new List<KeyValuePair<string, string>>();
+                pairs.Add(new KeyValuePair<string, string>("idEvento", "16"));
+
+                FormUrlEncodedContent content = new FormUrlEncodedContent(pairs);
+
+                var response = client.PostAsync("api/EventoUsuarioFavorito/AdicionarFavorito", content).Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var retorno = response.Content.ReadAsStringAsync().Result;
+
+                    MessageBox.Show(retorno);
+                }
+            }
+        }
+
+        private void btnRemoverFavorito_Click(object sender, EventArgs e)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://localhost:50081");
+                client.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", Authentication.access_token);
+
+                var response = client.DeleteAsync("api/EventoUsuarioFavorito/RemoverFavorito?idEvento=16").Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var retorno = response.Content.ReadAsStringAsync().Result;
+
+                    MessageBox.Show(retorno);
+                }
+            }
+        }
+
+        private void btnBuscarListaCidadesUfs_Click(object sender, EventArgs e)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://localhost:50081");
+                client.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", Authentication.access_token);
+
+                var response = client.GetAsync("api/Evento/BuscarListaCidadeUfsExistentesEmEventos").Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var retorno = response.Content.ReadAsStringAsync().Result;
+
+                    var eventosRetorno = JsonConvert.DeserializeObject<List<Evento>>(retorno, new JsonSerializerSettings
+                    {
+                        NullValueHandling = NullValueHandling.Ignore
+                    });
+
+                    MessageBox.Show(retorno);
+                }
+            }
+        }
+
+        private void btnBuscarCaronaPorEvento_Click(object sender, EventArgs e)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://localhost:50081");
+                client.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", Authentication.access_token);
+
+                var response = client.GetAsync("api/EventoCarona/BuscarPorEvento?idEvento=16").Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var retorno = response.Content.ReadAsStringAsync().Result;
+
+                    var eventosCaronaRetorno = JsonConvert.DeserializeObject<List<EventoCarona>>(retorno, new JsonSerializerSettings
+                    {
+                        NullValueHandling = NullValueHandling.Ignore
+                    });
+
+                    MessageBox.Show(retorno);
+                }
             }
         }
 

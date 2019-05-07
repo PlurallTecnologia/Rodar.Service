@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Web;
 
-namespace TestApi.Models
+namespace Rodar.Domain.Entity
 {
     public class Evento
     {
         public int idEvento { get; set; }
-        public DateTime? dataCriacao { get; set; }
+        public DateTime? DataCriacao { get; set; }
         public int idUsuarioCriacao { get; set; }
+        public string nomeEvento { get; set; }
         public string enderecoRua { get; set; }
         public string enderecoComplemento { get; set; }
         public string enderecoBairro { get; set; }
@@ -27,6 +27,5 @@ namespace TestApi.Models
         public DateTime? dataHoraInicio { get; set; }
         public DateTime? dataHoraTermino { get; set; }
         public string descricaoEvento { get; set; }
-        public bool Favorito { get; set; }
     }
 }

@@ -24,5 +24,59 @@ namespace Rodar.Service.Models
         public string urlImagemRGFrente { get; set; }
         public string urlImagemRGTras { get; set; }
         public string urlImagemCPF { get; set; }
+        public bool Transportador { get; set; }
+        public bool OrganizadorEvento { get; set; }
+
+        public static Usuario EntityToModel(Domain.Entity.Usuario usuario)
+        {
+            return new Usuario()
+            {
+                CPF = usuario.CPF,
+                dataNascimento = usuario.dataNascimento,
+                Descricao = usuario.Descricao,
+                Email = usuario.Email,
+                facebookId = usuario.facebookId,
+                Genero = usuario.Genero,
+                googleId = usuario.googleId,
+                idUsuario = usuario.idUsuario,
+                Nome = usuario.Nome,
+                numeroTelefone = usuario.numeroTelefone,
+                RG = usuario.RG,
+                Senha = usuario.Senha,
+                Sobrenome = usuario.Sobrenome,
+                urlImagemCPF = usuario.urlImagemCPF,
+                urlImagemRGFrente = usuario.urlImagemRGFrente,
+                urlImagemRGTras = usuario.urlImagemRGTras,
+                urlImagemSelfie = usuario.urlImagemSelfie,
+                OrganizadorEvento = usuario.OrganizadorEvento,
+                Transportador = usuario.Transportador
+            };
+        }
+
+        public static Domain.Entity.Usuario ModelToEntity(Usuario usuario)
+        {
+            return new Domain.Entity.Usuario()
+            {
+                CPF = usuario.CPF,
+                dataNascimento = usuario.dataNascimento,
+                Descricao = usuario.Descricao,
+                Email = usuario.Email,
+                facebookId = usuario.facebookId,
+                Genero = usuario.Genero,
+                googleId = usuario.googleId,
+                idUsuario = usuario.idUsuario,
+                Nome = usuario.Nome,
+                numeroTelefone = usuario.numeroTelefone,
+                RG = usuario.RG,
+                Senha = usuario.Senha,
+                Sobrenome = usuario.Sobrenome,
+                urlImagemCPF = usuario.urlImagemCPF,
+                urlImagemRGFrente = usuario.urlImagemRGFrente,
+                urlImagemRGTras = usuario.urlImagemRGTras,
+                urlImagemSelfie = usuario.urlImagemSelfie,
+                OrganizadorEvento = usuario.OrganizadorEvento,
+                Transportador = usuario.Transportador
+            };
+        }
     }
 }
