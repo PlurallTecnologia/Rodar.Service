@@ -8,9 +8,11 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Web;
 using System.Web.Http;
 using System.Web.Script.Services;
 
@@ -94,15 +96,22 @@ namespace Rodar.Service.Controllers
         [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
         public HttpResponseMessage BuscarTodos()
         {
-            var appEventoCarona = new bllEventoCarona(DBRepository.GetEventoCaronaRepository());
+            try
+            {
+                var appEventoCarona = new bllEventoCarona(DBRepository.GetEventoCaronaRepository());
 
-            var listaEventos = appEventoCarona
-                .BuscarTodos()
-                .Where(le => le.idUsuarioMotorista == LoggedUserInformation.userId)
-                .Select(eventoCarona => EventoCarona.EntityToModel(eventoCarona))
-                .ToList();
+                var listaEventos = appEventoCarona
+                    .BuscarTodos()
+                    .Where(le => le.idUsuarioMotorista == LoggedUserInformation.userId)
+                    .Select(eventoCarona => EventoCarona.EntityToModel(eventoCarona))
+                    .ToList();
 
-            return Request.CreateResponse(HttpStatusCode.OK, listaEventos);
+                return Request.CreateResponse(HttpStatusCode.OK, listaEventos);
+            }
+            catch (Exception Ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, Ex.Message);
+            }
         }
 
         [HttpGet]
@@ -110,16 +119,76 @@ namespace Rodar.Service.Controllers
         [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
         public HttpResponseMessage BuscarPorEvento(int idEvento)
         {
-            var appEventoCarona = new bllEventoCarona(DBRepository.GetEventoCaronaRepository());
+            try
+            {
+                var appEventoCarona = new bllEventoCarona(DBRepository.GetEventoCaronaRepository());
 
-            var listaEventos = appEventoCarona
-                .BuscarPorEvento(idEvento)
-                .Select(eventoCarona => EventoCarona.EntityToModel(eventoCarona))
-                .ToList();
+                var listaEventos = appEventoCarona
+                    .BuscarPorEvento(idEvento)?
+                    .Select(eventoCarona => EventoCarona.EntityToModel(eventoCarona))
+                    .ToList();
 
-            return Request.CreateResponse(HttpStatusCode.OK, listaEventos);
+                return Request.CreateResponse(HttpStatusCode.OK, listaEventos);
+            }
+            catch (Exception Ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, Ex.Message);
+            }
         }
 
+        [HttpGet]
+        [ActionName("BuscarAtivos")]
+        [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
+        public HttpResponseMessage BuscarAtivos()
+        {
+            try
+            {
+                var appEventoCarona = new bllEventoCarona(DBRepository.GetEventoCaronaRepository());
+
+                var listaEventos = appEventoCarona
+                    .BuscarTodos()
+                    .Select(eventoCarona => EventoCarona.EntityToModel(eventoCarona))
+                    .Where(le => le.idUsuarioMotorista == LoggedUserInformation.userId
+                    || (le.Passageiros != null ? le.Passageiros.Exists(p => p.idUsuario == LoggedUserInformation.userId) : true)
+                    && le.Evento.dataHoraInicio >= DateTime.Now)
+                    .ToList();
+
+                var fileLog = HttpContext.Current.Server.MapPath("~/Log/Log.txt");
+                File.AppendAllText(fileLog, $"Buscar Ativos: {listaEventos.Count.ToString()}");
+
+                return Request.CreateResponse(HttpStatusCode.OK, listaEventos);
+            }
+            catch (Exception Ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, Ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [ActionName("BuscarHistorico")]
+        [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
+        public HttpResponseMessage BuscarHistorico()
+        {
+            try
+            {
+                var appEventoCarona = new bllEventoCarona(DBRepository.GetEventoCaronaRepository());
+
+                var listaEventos = appEventoCarona
+                    .BuscarTodos()
+                    .Select(eventoCarona => EventoCarona.EntityToModel(eventoCarona))
+                    .Where(le => le.idUsuarioMotorista == LoggedUserInformation.userId
+                    || (le.Passageiros != null ? le.Passageiros.Exists(p => p.idUsuario == LoggedUserInformation.userId) : true)
+                    && le.Evento.dataHoraInicio <= DateTime.Now)
+                    .ToList();
+
+                return Request.CreateResponse(HttpStatusCode.OK, listaEventos);
+            }
+            catch (Exception Ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, Ex.Message);
+            }
+        }
+        
         [HttpPost]
         [ActionName("AdicionarParticipacaoCarona")]
         public HttpResponseMessage AdicionarParticipacaoCarona(int idEventoCarona)
@@ -143,14 +212,38 @@ namespace Rodar.Service.Controllers
         }
 
         [HttpDelete]
-        [ActionName("RemoverParticipacaoTransporte")]
-        public HttpResponseMessage RemoverParticipacaoTransporte(int idEventoCarona)
+        [ActionName("RemoverParticipacaoCarona")]
+        public HttpResponseMessage RemoverParticipacaoCarona(int idEventoCarona)
         {
             try
             {
                 var appEventoCaronaPassageiro = new bllEventoCaronaPassageiro(DBRepository.GetEventoCaronaPassageiroRepository());
 
                 return Request.CreateResponse(HttpStatusCode.OK, appEventoCaronaPassageiro.Excluir(idEventoCarona, LoggedUserInformation.userId));
+            }
+            catch (Exception Ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, Ex.Message);
+            }
+        }
+
+        [HttpPost]
+        [ActionName("AvaliarCarona")]
+        public HttpResponseMessage AvaliarCarona(int idEventoCarona, int avaliacao)
+        {
+            try
+            {
+                var appAvaliacaoCarona = new bllAvaliacaoCarona(DBRepository.GetAvaliacaoCaronaRepository());
+                var appEventoCarona = new bllEventoCarona(DBRepository.GetEventoCaronaRepository());
+
+                var avaliacaoCaronaModel = new AvaliacaoCarona();
+
+                avaliacaoCaronaModel.idUsuarioAvaliador = LoggedUserInformation.userId;
+                avaliacaoCaronaModel.idUsuarioAvaliado = appEventoCarona.Buscar(idEventoCarona).idUsuarioMotorista;
+                avaliacaoCaronaModel.Avaliacao = avaliacao;
+                avaliacaoCaronaModel.idEventoCarona = idEventoCarona;
+
+                return Request.CreateResponse(HttpStatusCode.OK, avaliacaoCaronaModel);
             }
             catch (Exception Ex)
             {

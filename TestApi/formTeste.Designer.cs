@@ -51,6 +51,13 @@
             this.btnRemoverFavorito = new System.Windows.Forms.Button();
             this.btnBuscarListaCidadesUfs = new System.Windows.Forms.Button();
             this.btnBuscarCaronaPorEvento = new System.Windows.Forms.Button();
+            this.btnBuscarTransportePorEvento = new System.Windows.Forms.Button();
+            this.btnBuscarTransportesAtivos = new System.Windows.Forms.Button();
+            this.btnBuscarCaronasAtivas = new System.Windows.Forms.Button();
+            this.btnBuscarCaronasHistorico = new System.Windows.Forms.Button();
+            this.btnBuscarTransportesHistorico = new System.Windows.Forms.Button();
+            this.btnAvaliarTransporte = new System.Windows.Forms.Button();
+            this.btnAvaliarCarona = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnLogar
@@ -194,7 +201,7 @@
             // 
             // btnExcluirTransporte
             // 
-            this.btnExcluirTransporte.Location = new System.Drawing.Point(418, 164);
+            this.btnExcluirTransporte.Location = new System.Drawing.Point(541, 164);
             this.btnExcluirTransporte.Name = "btnExcluirTransporte";
             this.btnExcluirTransporte.Size = new System.Drawing.Size(117, 37);
             this.btnExcluirTransporte.TabIndex = 17;
@@ -244,7 +251,7 @@
             // 
             // btnAdicionarFavorito
             // 
-            this.btnAdicionarFavorito.Location = new System.Drawing.Point(142, 207);
+            this.btnAdicionarFavorito.Location = new System.Drawing.Point(302, 207);
             this.btnAdicionarFavorito.Name = "btnAdicionarFavorito";
             this.btnAdicionarFavorito.Size = new System.Drawing.Size(159, 37);
             this.btnAdicionarFavorito.TabIndex = 19;
@@ -254,7 +261,7 @@
             // 
             // btnRemoverFavorito
             // 
-            this.btnRemoverFavorito.Location = new System.Drawing.Point(307, 207);
+            this.btnRemoverFavorito.Location = new System.Drawing.Point(467, 207);
             this.btnRemoverFavorito.Name = "btnRemoverFavorito";
             this.btnRemoverFavorito.Size = new System.Drawing.Size(159, 37);
             this.btnRemoverFavorito.TabIndex = 20;
@@ -282,11 +289,88 @@
             this.btnBuscarCaronaPorEvento.UseVisualStyleBackColor = true;
             this.btnBuscarCaronaPorEvento.Click += new System.EventHandler(this.btnBuscarCaronaPorEvento_Click);
             // 
+            // btnBuscarTransportePorEvento
+            // 
+            this.btnBuscarTransportePorEvento.Location = new System.Drawing.Point(418, 164);
+            this.btnBuscarTransportePorEvento.Name = "btnBuscarTransportePorEvento";
+            this.btnBuscarTransportePorEvento.Size = new System.Drawing.Size(117, 37);
+            this.btnBuscarTransportePorEvento.TabIndex = 23;
+            this.btnBuscarTransportePorEvento.Text = "Buscar Transporte Por Evento";
+            this.btnBuscarTransportePorEvento.UseVisualStyleBackColor = true;
+            this.btnBuscarTransportePorEvento.Click += new System.EventHandler(this.btnBuscarTransportePorEvento_Click);
+            // 
+            // btnBuscarTransportesAtivos
+            // 
+            this.btnBuscarTransportesAtivos.Location = new System.Drawing.Point(664, 164);
+            this.btnBuscarTransportesAtivos.Name = "btnBuscarTransportesAtivos";
+            this.btnBuscarTransportesAtivos.Size = new System.Drawing.Size(117, 37);
+            this.btnBuscarTransportesAtivos.TabIndex = 24;
+            this.btnBuscarTransportesAtivos.Text = "Buscar Transportes Ativos";
+            this.btnBuscarTransportesAtivos.UseVisualStyleBackColor = true;
+            this.btnBuscarTransportesAtivos.Click += new System.EventHandler(this.btnBuscarTransportesAtivos_Click);
+            // 
+            // btnBuscarCaronasAtivas
+            // 
+            this.btnBuscarCaronasAtivas.Location = new System.Drawing.Point(664, 121);
+            this.btnBuscarCaronasAtivas.Name = "btnBuscarCaronasAtivas";
+            this.btnBuscarCaronasAtivas.Size = new System.Drawing.Size(117, 37);
+            this.btnBuscarCaronasAtivas.TabIndex = 25;
+            this.btnBuscarCaronasAtivas.Text = "Buscar Caronas Ativos";
+            this.btnBuscarCaronasAtivas.UseVisualStyleBackColor = true;
+            this.btnBuscarCaronasAtivas.Click += new System.EventHandler(this.btnBuscarCaronasAtivas_Click);
+            // 
+            // btnBuscarCaronasHistorico
+            // 
+            this.btnBuscarCaronasHistorico.Location = new System.Drawing.Point(787, 121);
+            this.btnBuscarCaronasHistorico.Name = "btnBuscarCaronasHistorico";
+            this.btnBuscarCaronasHistorico.Size = new System.Drawing.Size(117, 37);
+            this.btnBuscarCaronasHistorico.TabIndex = 27;
+            this.btnBuscarCaronasHistorico.Text = "Buscar Caronas Histórico";
+            this.btnBuscarCaronasHistorico.UseVisualStyleBackColor = true;
+            this.btnBuscarCaronasHistorico.Click += new System.EventHandler(this.btnBuscarCaronasHistorico_Click);
+            // 
+            // btnBuscarTransportesHistorico
+            // 
+            this.btnBuscarTransportesHistorico.Location = new System.Drawing.Point(787, 164);
+            this.btnBuscarTransportesHistorico.Name = "btnBuscarTransportesHistorico";
+            this.btnBuscarTransportesHistorico.Size = new System.Drawing.Size(117, 37);
+            this.btnBuscarTransportesHistorico.TabIndex = 26;
+            this.btnBuscarTransportesHistorico.Text = "Buscar Transportes Histórico";
+            this.btnBuscarTransportesHistorico.UseVisualStyleBackColor = true;
+            this.btnBuscarTransportesHistorico.Click += new System.EventHandler(this.btnBuscarTransportesHistorico_Click);
+            // 
+            // btnAvaliarTransporte
+            // 
+            this.btnAvaliarTransporte.Location = new System.Drawing.Point(302, 250);
+            this.btnAvaliarTransporte.Name = "btnAvaliarTransporte";
+            this.btnAvaliarTransporte.Size = new System.Drawing.Size(159, 37);
+            this.btnAvaliarTransporte.TabIndex = 28;
+            this.btnAvaliarTransporte.Text = "Avaliar Transporte";
+            this.btnAvaliarTransporte.UseVisualStyleBackColor = true;
+            this.btnAvaliarTransporte.Click += new System.EventHandler(this.btnAvaliarTransporte_Click);
+            // 
+            // btnAvaliarCarona
+            // 
+            this.btnAvaliarCarona.Location = new System.Drawing.Point(467, 250);
+            this.btnAvaliarCarona.Name = "btnAvaliarCarona";
+            this.btnAvaliarCarona.Size = new System.Drawing.Size(159, 37);
+            this.btnAvaliarCarona.TabIndex = 29;
+            this.btnAvaliarCarona.Text = "Avaliar Carona";
+            this.btnAvaliarCarona.UseVisualStyleBackColor = true;
+            this.btnAvaliarCarona.Click += new System.EventHandler(this.btnAvaliarCarona_Click);
+            // 
             // formTeste
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(946, 525);
+            this.Controls.Add(this.btnAvaliarCarona);
+            this.Controls.Add(this.btnAvaliarTransporte);
+            this.Controls.Add(this.btnBuscarCaronasHistorico);
+            this.Controls.Add(this.btnBuscarTransportesHistorico);
+            this.Controls.Add(this.btnBuscarCaronasAtivas);
+            this.Controls.Add(this.btnBuscarTransportesAtivos);
+            this.Controls.Add(this.btnBuscarTransportePorEvento);
             this.Controls.Add(this.btnBuscarCaronaPorEvento);
             this.Controls.Add(this.btnBuscarListaCidadesUfs);
             this.Controls.Add(this.btnRemoverFavorito);
@@ -342,6 +426,13 @@
         private System.Windows.Forms.Button btnRemoverFavorito;
         private System.Windows.Forms.Button btnBuscarListaCidadesUfs;
         private System.Windows.Forms.Button btnBuscarCaronaPorEvento;
+        private System.Windows.Forms.Button btnBuscarTransportePorEvento;
+        private System.Windows.Forms.Button btnBuscarTransportesAtivos;
+        private System.Windows.Forms.Button btnBuscarCaronasAtivas;
+        private System.Windows.Forms.Button btnBuscarCaronasHistorico;
+        private System.Windows.Forms.Button btnBuscarTransportesHistorico;
+        private System.Windows.Forms.Button btnAvaliarTransporte;
+        private System.Windows.Forms.Button btnAvaliarCarona;
     }
 }
 

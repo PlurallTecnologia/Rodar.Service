@@ -100,6 +100,8 @@ namespace Rodar.Service.Controllers
             }
             catch (Exception Ex)
             {
+                var fileLog = HttpContext.Current.Server.MapPath("~/Log/Log.txt");
+                File.AppendAllText(fileLog, Ex.Message);
                 return Request.CreateResponse(HttpStatusCode.BadRequest, Ex.Message);
             }
         }

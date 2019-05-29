@@ -13,5 +13,6 @@ namespace Rodar.Domain.Repository
         int Excluir(int idEventoTransportePassageiro);
         int Excluir(int idEventoTransporte, int idUsuarioPassageiro);
         IEnumerable<EventoTransportePassageiro> BuscarTodos();
+        IEnumerable<EventoTransportePassageiro> BuscarPorTransporte(int idEventoTransporte);
     }
 }

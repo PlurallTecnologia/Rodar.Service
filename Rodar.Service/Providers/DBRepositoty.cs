@@ -42,5 +42,15 @@ namespace Rodar.Service.Providers
         {
             return new Repository.SqlServer.EventoCaronaPassageiroRepository();
         }
+
+        public static IAvaliacaoTransporteRepository GetAvaliacaoTransporteRepository()
+        {
+            return new Repository.SqlServer.AvaliacaoTransporteRepository();
+        }
+
+        public static IAvaliacaoCaronaRepository GetAvaliacaoCaronaRepository()
+        {
+            return new Repository.SqlServer.AvaliacaoCaronaRepository();
+        }
     }
 }

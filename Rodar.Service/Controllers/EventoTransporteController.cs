@@ -4,10 +4,7 @@ using Rodar.Service.Globals;
 using Rodar.Service.Models;
 using Rodar.Service.Providers;
 using System;
-using System.Collections.Generic;
-using System.Configuration;
 using System.Data;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -16,6 +13,7 @@ using System.Web.Script.Services;
 
 namespace Rodar.Service.Controllers
 {
+    [Authorize]
     public class EventoTransporteController : ApiController
     {
         [HttpPost]
@@ -114,8 +112,44 @@ namespace Rodar.Service.Controllers
             var appEventoTransporte = new bllEventoTransporte(DBRepository.GetEventoTransporteRepository());
 
             var listaEventos = appEventoTransporte
-                .BuscarPorEvento(idEvento)
+                .BuscarPorEvento(idEvento)?
                 .Select(eventoTransporte => EventoTransporte.EntityToModel(eventoTransporte))
+                .ToList();
+
+            return Request.CreateResponse(HttpStatusCode.OK, listaEventos);
+        }
+
+        [HttpGet]
+        [ActionName("BuscarAtivos")]
+        [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
+        public HttpResponseMessage BuscarAtivos()
+        {
+            var appEventoTransporte = new bllEventoTransporte(DBRepository.GetEventoTransporteRepository());
+
+            var listaEventos = appEventoTransporte
+                .BuscarTodos()
+                .Select(eventoTransporte => EventoTransporte.EntityToModel(eventoTransporte))
+                .Where(le => le.idUsuarioTransportador == LoggedUserInformation.userId
+                || (le.Passageiros != null ? le.Passageiros.Exists(p => p.idUsuario == LoggedUserInformation.userId) : true)
+                && le.Evento.dataHoraInicio >= DateTime.Now)
+                .ToList();
+
+            return Request.CreateResponse(HttpStatusCode.OK, listaEventos);
+        }
+
+        [HttpGet]
+        [ActionName("BuscarHistorico")]
+        [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
+        public HttpResponseMessage BuscarHistorico()
+        {
+            var appEventoTransporte = new bllEventoTransporte(DBRepository.GetEventoTransporteRepository());
+
+            var listaEventos = appEventoTransporte
+                .BuscarTodos()
+                .Select(eventoTransporte => EventoTransporte.EntityToModel(eventoTransporte))
+                .Where(le => le.idUsuarioTransportador == LoggedUserInformation.userId
+                || (le.Passageiros != null ? le.Passageiros.Exists(p => p.idUsuario == LoggedUserInformation.userId) : true)
+                && le.Evento.dataHoraInicio <= DateTime.Now)
                 .ToList();
 
             return Request.CreateResponse(HttpStatusCode.OK, listaEventos);
@@ -152,6 +186,32 @@ namespace Rodar.Service.Controllers
                 var appEventoTransportePassageiro = new bllEventoTransportePassageiro(DBRepository.GetEventoTransportePassageiroRepository());
 
                 return Request.CreateResponse(HttpStatusCode.OK, appEventoTransportePassageiro.Excluir(idEventoTransporte, LoggedUserInformation.userId));
+            }
+            catch (Exception Ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, Ex.Message);
+            }
+        }
+
+        [HttpPost]
+        [ActionName("AvaliarTransporte")]
+        public HttpResponseMessage AvaliarTransporte([System.Web.Http.FromBody] AvaliacaoTransporte avaliacaoTransporte)
+        {
+            try
+            {
+                var appAvaliacaoTransporte = new bllAvaliacaoTransporte(DBRepository.GetAvaliacaoTransporteRepository());
+                var appEventoTransporte = new bllEventoTransporte(DBRepository.GetEventoTransporteRepository());
+
+                var avaliacaoTransporteModel = new AvaliacaoTransporte();
+
+                avaliacaoTransporteModel.idUsuarioAvaliador = LoggedUserInformation.userId;
+                avaliacaoTransporteModel.idUsuarioAvaliado = appEventoTransporte.Buscar(avaliacaoTransporte.idEventoTransporte).idUsuarioTransportador;
+                avaliacaoTransporteModel.Avaliacao = avaliacaoTransporte.Avaliacao;
+                avaliacaoTransporteModel.idEventoTransporte = avaliacaoTransporte.idEventoTransporte;
+
+                appAvaliacaoTransporte.Cadastrar(AvaliacaoTransporte.ModelToEntity(avaliacaoTransporteModel));
+
+                return Request.CreateResponse(HttpStatusCode.OK, avaliacaoTransporteModel);
             }
             catch (Exception Ex)
             {

@@ -48,5 +48,17 @@ namespace Rodar.Business
                 throw;
             }
         }
+
+        public IEnumerable<EventoCaronaPassageiro> BuscarPorCarona(int idEventoCarona = 0)
+        {
+            try
+            {
+                return _eventoCaronaPassageiroRepository.BuscarPorCarona(idEventoCarona);
+            }
+            catch
+            {
+                throw;
+            }
+        }
     }
 }

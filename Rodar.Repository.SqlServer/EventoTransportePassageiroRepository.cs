@@ -150,12 +150,59 @@ namespace Rodar.Repository.SqlServer
             }
         }
 
+        public IEnumerable<EventoTransportePassageiro> BuscarPorTransporte(int idEventoTransporte = 0)
+        {
+            if (idEventoTransporte == 0)
+                return BuscarTodos();
+
+            List<EventoTransportePassageiro> eventoTransportesPassageiros = null;
+
+            using (SqlConnection con = Database.GetCurrentDbConnection())
+            {
+                string stringSQL = @"SELECT *
+                                        FROM EventoTransportePassageiro
+                                        WHERE idEventoTransporte = @idEventoTransporte";
+
+                SqlCommand cmdSelecionar = new SqlCommand(stringSQL, con);
+
+                cmdSelecionar.Parameters.Add("idEventoTransporte", SqlDbType.Int).Value = idEventoTransporte;
+
+                try
+                {
+                    con.Open();
+                    SqlDataReader drSelecao = cmdSelecionar.ExecuteReader();
+
+                    if (drSelecao.HasRows)
+                        eventoTransportesPassageiros = new List<EventoTransportePassageiro>();
+
+                    while (drSelecao.Read())
+                    {
+                        var eventoTransportePassageiro = new EventoTransportePassageiro();
+
+                        PreencheCampos(drSelecao, ref eventoTransportePassageiro);
+
+                        eventoTransportesPassageiros.Add(eventoTransportePassageiro);
+                    }
+
+                    return eventoTransportesPassageiros;
+                }
+                catch
+                {
+                    throw;
+                }
+                finally
+                {
+                    con.Close();
+                }
+            }
+        }
+
         private static void PreencheCampos(SqlDataReader drSelecao, ref EventoTransportePassageiro eventoTransportePassageiro)
         {
             if (drSelecao["idEventoTransportePassageiro"] != DBNull.Value)
                 eventoTransportePassageiro.idEventoTransportePassageiro = Convert.ToInt32(drSelecao["idEventoTransportePassageiro"].ToString());
 
-            if (drSelecao["idEventoCarona"] != DBNull.Value)
+            if (drSelecao["idEventoTransporte"] != DBNull.Value)
                 eventoTransportePassageiro.idEventoTransporte = Convert.ToInt32(drSelecao["idEventoTransporte"].ToString());
 
             if (drSelecao["idUsuarioPassageiro"] != DBNull.Value)

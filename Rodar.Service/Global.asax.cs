@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Rodar.Service.App_Start;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -18,6 +19,9 @@ namespace Rodar.Service
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+            GlobalConfiguration.Configuration
+                    .ParameterBindingRules
+                    .Insert(0, SimplePostVariableParameterBinding.HookupParameterBinding);
         }
     }
 }

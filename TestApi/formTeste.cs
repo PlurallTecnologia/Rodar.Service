@@ -142,9 +142,9 @@ namespace TestApi
 
                 List<KeyValuePair<string, string>> pairs = new List<KeyValuePair<string, string>>();
                 
-                pairs.Add(new KeyValuePair<string, string>("username", "1@1.com.br"));
+                pairs.Add(new KeyValuePair<string, string>("username", "mauricio.calgaro@gmail.com"));
                 //pairs.Add(new KeyValuePair<string, string>("username", "123456789"));
-                pairs.Add(new KeyValuePair<string, string>("password", "1"));
+                pairs.Add(new KeyValuePair<string, string>("password", "123"));
                 pairs.Add(new KeyValuePair<string, string>("grant_type", "password"));
 
                 FormUrlEncodedContent content = new FormUrlEncodedContent(pairs);
@@ -678,7 +678,7 @@ namespace TestApi
                 client.DefaultRequestHeaders.Authorization =
                     new AuthenticationHeaderValue("Bearer", Authentication.access_token);
 
-                var response = client.GetAsync("api/EventoCarona/BuscarPorEvento?idEvento=16").Result;
+                var response = client.GetAsync("api/EventoCarona/BuscarPorEvento?idEvento=19").Result;
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -688,6 +688,176 @@ namespace TestApi
                     {
                         NullValueHandling = NullValueHandling.Ignore
                     });
+
+                    MessageBox.Show(retorno);
+                }
+            }
+        }
+
+        private void btnBuscarTransportePorEvento_Click(object sender, EventArgs e)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://localhost:50081");
+                client.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", Authentication.access_token);
+
+                var response = client.GetAsync("api/EventoTransporte/BuscarPorEvento?idEvento=19").Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var retorno = response.Content.ReadAsStringAsync().Result;
+
+                    var eventosCaronaRetorno = JsonConvert.DeserializeObject<List<EventoTransporte>>(retorno, new JsonSerializerSettings
+                    {
+                        NullValueHandling = NullValueHandling.Ignore
+                    });
+
+                    MessageBox.Show(retorno);
+                }
+            }
+        }
+
+        private void btnBuscarTransportesAtivos_Click(object sender, EventArgs e)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://localhost:50081");
+                client.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", Authentication.access_token);
+
+                var response = client.GetAsync("api/EventoTransporte/BuscarAtivos").Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var retorno = response.Content.ReadAsStringAsync().Result;
+
+                    var eventosCaronaRetorno = JsonConvert.DeserializeObject<List<EventoTransporte>>(retorno, new JsonSerializerSettings
+                    {
+                        NullValueHandling = NullValueHandling.Ignore
+                    });
+
+                    MessageBox.Show(retorno);
+                }
+            }
+        }
+
+        private void btnBuscarCaronasAtivas_Click(object sender, EventArgs e)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://localhost:50081");
+                client.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", Authentication.access_token);
+
+                var response = client.GetAsync("api/EventoCarona/BuscarAtivos").Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var retorno = response.Content.ReadAsStringAsync().Result;
+
+                    var eventosCaronaRetorno = JsonConvert.DeserializeObject<List<EventoTransporte>>(retorno, new JsonSerializerSettings
+                    {
+                        NullValueHandling = NullValueHandling.Ignore
+                    });
+
+                    MessageBox.Show(retorno);
+                }
+            }
+        }
+
+        private void btnBuscarCaronasHistorico_Click(object sender, EventArgs e)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://localhost:50081");
+                client.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", Authentication.access_token);
+
+                var response = client.GetAsync("api/EventoCarona/BuscarHistorico").Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var retorno = response.Content.ReadAsStringAsync().Result;
+
+                    var eventosCaronaRetorno = JsonConvert.DeserializeObject<List<EventoTransporte>>(retorno, new JsonSerializerSettings
+                    {
+                        NullValueHandling = NullValueHandling.Ignore
+                    });
+
+                    MessageBox.Show(retorno);
+                }
+            }
+        }
+
+        private void btnBuscarTransportesHistorico_Click(object sender, EventArgs e)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://localhost:50081");
+                client.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", Authentication.access_token);
+
+                var response = client.GetAsync("api/EventoTransporte/BuscarHistorico").Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var retorno = response.Content.ReadAsStringAsync().Result;
+
+                    var eventosCaronaRetorno = JsonConvert.DeserializeObject<List<EventoTransporte>>(retorno, new JsonSerializerSettings
+                    {
+                        NullValueHandling = NullValueHandling.Ignore
+                    });
+
+                    MessageBox.Show(retorno);
+                }
+            }
+        }
+
+        private void btnAvaliarTransporte_Click(object sender, EventArgs e)
+        {
+            using ( var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://localhost:50081");
+                client.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", Authentication.access_token);
+
+                AvaliacaoTransporte eventoTransporte = new AvaliacaoTransporte
+                {
+                    idEventoTransporte = 4,
+                    Avaliacao = 2
+                };
+                
+                var response = client.PostAsJsonAsync("api/EventoTransporte/AvaliarTransporte", eventoTransporte).Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var retorno = response.Content.ReadAsStringAsync().Result;
+
+                    MessageBox.Show(retorno);
+                }
+            }
+        }
+
+        private void btnAvaliarCarona_Click(object sender, EventArgs e)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://localhost:50081");
+                client.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", Authentication.access_token);
+
+                List<KeyValuePair<string, string>> pairs = new List<KeyValuePair<string, string>>();
+                pairs.Add(new KeyValuePair<string, string>("idEventoCarona", "9"));
+                pairs.Add(new KeyValuePair<string, string>("avaliacao", "2"));
+
+                FormUrlEncodedContent content = new FormUrlEncodedContent(pairs);
+
+                var response = client.PostAsync("api/EventoCarona/AvaliarCarona", content).Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var retorno = response.Content.ReadAsStringAsync().Result;
 
                     MessageBox.Show(retorno);
                 }

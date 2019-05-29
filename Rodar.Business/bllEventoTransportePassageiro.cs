@@ -48,5 +48,17 @@ namespace Rodar.Business
                 throw;
             }
         }
+
+        public IEnumerable<EventoTransportePassageiro> BuscarPorTransporte(int idEventoTransporte = 0)
+        {
+            try
+            {
+                return _eventoTransportePassageiroRepository.BuscarPorTransporte(idEventoTransporte);
+            }
+            catch
+            {
+                throw;
+            }
+        }
     }
 }

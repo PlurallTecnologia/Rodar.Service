@@ -40,6 +40,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entity\AvaliacaoCarona.cs" />
+    <Compile Include="Entity\AvaliacaoTransporte.cs" />
     <Compile Include="Entity\Evento.cs" />
     <Compile Include="Entity\EventoCarona.cs" />
     <Compile Include="Entity\EventoCaronaPassageiro.cs" />
@@ -49,6 +51,8 @@
     <Compile Include="Entity\Login.cs" />
     <Compile Include="Entity\Usuario.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repository\IAvaliacaoCaronaRepository.cs" />
+    <Compile Include="Repository\IAvaliacaoTransporteRepository.cs" />
     <Compile Include="Repository\IEventoCaronaPassageiroRepository.cs" />
     <Compile Include="Repository\IEventoCaronaRepository.cs" />
     <Compile Include="Repository\IEventoRepository.cs" />

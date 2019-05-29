@@ -59,6 +59,8 @@
     <Compile Include="formTeste.Designer.cs">
       <DependentUpon>formTeste.cs</DependentUpon>
     </Compile>
+    <Compile Include="Models\AvaliacaoCarona.cs" />
+    <Compile Include="Models\AvaliacaoTransporte.cs" />
     <Compile Include="Models\Evento.cs" />
     <Compile Include="Models\EventoCarona.cs" />
     <Compile Include="Models\EventoTransporte.cs" />
