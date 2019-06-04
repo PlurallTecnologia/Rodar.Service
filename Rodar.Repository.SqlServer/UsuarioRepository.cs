@@ -22,8 +22,8 @@ namespace Rodar.Repository.SqlServer
 
             using (SqlConnection con = Database.GetCurrentDbConnection())
             {
-                string stringSQL = @"INSERT INTO Usuario(Nome, Sobrenome, RG, CPF, urlImagemSelfie, Genero, Descricao, dataNascimento, Email, numeroTelefone, Senha, facebookId, googleId, urlImagemRGFrente, urlImagemRGTras, urlImagemCPF, Transportador, OrganizadorEvento)
-                                            VALUES(@Nome, @Sobrenome, @RG, @CPF, @urlImagemSelfie, @Genero, @Descricao, @dataNascimento, @Email, @numeroTelefone, @Senha, @facebookId, @googleId, @urlImagemRGFrente, @urlImagemRGTras, @urlImagemCPF, @Transportador, @OrganizadorEvento);
+                string stringSQL = @"INSERT INTO Usuario(Nome, Sobrenome, RG, CPF, urlImagemSelfie, Genero, Descricao, dataNascimento, Email, numeroTelefone, Senha, facebookId, googleId, urlImagemRGFrente, urlImagemRGTras, urlImagemCPF, Transportador, OrganizadorEvento, tokenNotificacao)
+                                            VALUES(@Nome, @Sobrenome, @RG, @CPF, @urlImagemSelfie, @Genero, @Descricao, @dataNascimento, @Email, @numeroTelefone, @Senha, @facebookId, @googleId, @urlImagemRGFrente, @urlImagemRGTras, @urlImagemCPF, @Transportador, @OrganizadorEvento, @tokenNotificacao);
                                             SET @idUsuario = SCOPE_IDENTITY()";
 
                 SqlCommand cmdInserir = new SqlCommand(stringSQL, con);
@@ -54,6 +54,7 @@ namespace Rodar.Repository.SqlServer
                 cmdInserir.Parameters.Add("urlImagemCPF", SqlDbType.VarChar).Value = Usuario.urlImagemCPF;
                 cmdInserir.Parameters.Add("Transportador", SqlDbType.Bit).Value = Usuario.Transportador;
                 cmdInserir.Parameters.Add("OrganizadorEvento", SqlDbType.Bit).Value = Usuario.OrganizadorEvento;
+                cmdInserir.Parameters.Add("tokenNotificacao", SqlDbType.VarChar).Value = Usuario.tokenNotificacao;
 
                 try
                 {
@@ -95,6 +96,7 @@ namespace Rodar.Repository.SqlServer
                                       ,urlImagemCPF = @urlImagemCPF
                                       ,Transportador = @Transportador
                                       ,OrganizadorEvento = @OrganizadorEvento
+                                      ,tokenNotificacao = @tokenNotificacao
                                  WHERE Email = @Email";
 
                 SqlCommand cmdAtualizar = new SqlCommand(stringSQL, con);
@@ -124,6 +126,7 @@ namespace Rodar.Repository.SqlServer
                 cmdAtualizar.Parameters.Add("urlImagemCPF", SqlDbType.VarChar).Value = Usuario.urlImagemCPF;
                 cmdAtualizar.Parameters.Add("Transportador", SqlDbType.Bit).Value = Usuario.Transportador;
                 cmdAtualizar.Parameters.Add("OrganizadorEvento", SqlDbType.Bit).Value = Usuario.OrganizadorEvento;
+                cmdAtualizar.Parameters.Add("tokenNotificacao", SqlDbType.VarChar).Value = Usuario.tokenNotificacao;
 
                 try
                 {
@@ -277,6 +280,9 @@ namespace Rodar.Repository.SqlServer
 
             if (drSelecao["OrganizadorEvento"] != DBNull.Value)
                 usuario.OrganizadorEvento = Convert.ToBoolean(drSelecao["OrganizadorEvento"].ToString());
+
+            if (drSelecao["tokenNotificacao"] != DBNull.Value)
+                usuario.tokenNotificacao = drSelecao["tokenNotificacao"].ToString();
         }
 
         private void ValidaCampos(ref Usuario usuario)
@@ -296,6 +302,7 @@ namespace Rodar.Repository.SqlServer
             if (String.IsNullOrEmpty(usuario.urlImagemRGFrente)) { usuario.urlImagemRGFrente = String.Empty; }
             if (String.IsNullOrEmpty(usuario.urlImagemRGTras)) { usuario.urlImagemRGTras = String.Empty; }
             if (String.IsNullOrEmpty(usuario.urlImagemSelfie)) { usuario.urlImagemSelfie = String.Empty; }
+            if (String.IsNullOrEmpty(usuario.tokenNotificacao)) { usuario.tokenNotificacao = String.Empty; }
         }
 
         private bool ExisteUsuario(string Email = "", string CPF = "")

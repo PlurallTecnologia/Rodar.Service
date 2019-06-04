@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using FirebaseAdmin.Messaging;
+using Newtonsoft.Json;
 using Rodar.Business;
 using Rodar.Service.Globals;
 using Rodar.Service.Models;
@@ -12,6 +13,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using System.Web.Script.Services;
@@ -81,7 +83,24 @@ namespace Rodar.Service.Controllers
         {
             try
             {
+                var fileLog = HttpContext.Current.Server.MapPath("~/Log/Log.txt");
+                File.AppendAllText(fileLog, $"Entrei excluir Carona");
+
                 var appEventoCarona = new bllEventoCarona(DBRepository.GetEventoCaronaRepository());
+
+                var topic = $"carona{idEventoCarona}";
+
+                var message = new Message()
+                {
+                    Notification = new Notification()
+                    {
+                        Title = "CARONA EXCLUIDA",
+                        Body = $"A CARONA {idEventoCarona} FOI EXCLUIDA COM SUCESSO",
+                    },
+                    Topic = topic,
+                };
+
+                var response = Task.Factory.StartNew(() => FirebaseMessaging.DefaultInstance.SendAsync(message)) ;
 
                 return Request.CreateResponse(HttpStatusCode.OK, appEventoCarona.Excluir(idEventoCarona));
             }
@@ -150,11 +169,8 @@ namespace Rodar.Service.Controllers
                     .Select(eventoCarona => EventoCarona.EntityToModel(eventoCarona))
                     .Where(le => le.idUsuarioMotorista == LoggedUserInformation.userId
                     || (le.Passageiros != null ? le.Passageiros.Exists(p => p.idUsuario == LoggedUserInformation.userId) : true)
-                    && le.Evento.dataHoraInicio >= DateTime.Now)
+                    && le.dataHoraPrevisaoChegada >= DateTime.Now)
                     .ToList();
-
-                var fileLog = HttpContext.Current.Server.MapPath("~/Log/Log.txt");
-                File.AppendAllText(fileLog, $"Buscar Ativos: {listaEventos.Count.ToString()}");
 
                 return Request.CreateResponse(HttpStatusCode.OK, listaEventos);
             }
@@ -178,7 +194,7 @@ namespace Rodar.Service.Controllers
                     .Select(eventoCarona => EventoCarona.EntityToModel(eventoCarona))
                     .Where(le => le.idUsuarioMotorista == LoggedUserInformation.userId
                     || (le.Passageiros != null ? le.Passageiros.Exists(p => p.idUsuario == LoggedUserInformation.userId) : true)
-                    && le.Evento.dataHoraInicio <= DateTime.Now)
+                    && le.dataHoraPrevisaoChegada <= DateTime.Now)
                     .ToList();
 
                 return Request.CreateResponse(HttpStatusCode.OK, listaEventos);
@@ -229,7 +245,7 @@ namespace Rodar.Service.Controllers
 
         [HttpPost]
         [ActionName("AvaliarCarona")]
-        public HttpResponseMessage AvaliarCarona(int idEventoCarona, int avaliacao)
+        public HttpResponseMessage AvaliarCarona([System.Web.Http.FromBody] AvaliacaoCarona avaliacaoCarona)
         {
             try
             {
@@ -239,11 +255,55 @@ namespace Rodar.Service.Controllers
                 var avaliacaoCaronaModel = new AvaliacaoCarona();
 
                 avaliacaoCaronaModel.idUsuarioAvaliador = LoggedUserInformation.userId;
-                avaliacaoCaronaModel.idUsuarioAvaliado = appEventoCarona.Buscar(idEventoCarona).idUsuarioMotorista;
-                avaliacaoCaronaModel.Avaliacao = avaliacao;
-                avaliacaoCaronaModel.idEventoCarona = idEventoCarona;
+                avaliacaoCaronaModel.idUsuarioAvaliado = appEventoCarona.Buscar(avaliacaoCarona.idEventoCarona).idUsuarioMotorista;
+                avaliacaoCaronaModel.Avaliacao = avaliacaoCarona.Avaliacao;
+                avaliacaoCaronaModel.idEventoCarona = avaliacaoCarona.idEventoCarona;
+                avaliacaoCaronaModel.Mensagem = avaliacaoCarona.Mensagem;
+
+                appAvaliacaoCarona.Cadastrar(AvaliacaoCarona.ModelToEntity(avaliacaoCaronaModel));
 
                 return Request.CreateResponse(HttpStatusCode.OK, avaliacaoCaronaModel);
+            }
+            catch (Exception Ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, Ex.Message);
+            }
+        }
+
+        [HttpPost]
+        [ActionName("EnviarMensagemUsuarioCarona")]
+        public HttpResponseMessage EnviarMensagemUsuarioCarona([System.Web.Http.FromBody] ChatUsuarioEventoCarona chatUsuarioEventoCarona)
+        {
+            try
+            {
+                var appChatUusuarioEventoCarona = new bllChatUsuarioEventoCarona(DBRepository.GetChatUsuarioEventoCaronaRepository());
+
+                chatUsuarioEventoCarona.idUsuarioOrigem = LoggedUserInformation.userId;
+
+                appChatUusuarioEventoCarona.Cadastrar(ChatUsuarioEventoCarona.ModelToEntity(chatUsuarioEventoCarona));
+
+                return Request.CreateResponse(HttpStatusCode.OK, chatUsuarioEventoCarona);
+            }
+            catch (Exception Ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, Ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [ActionName("BuscarMensagensEnviadasUsuario")]
+        public HttpResponseMessage BuscarMensagensUsuario()
+        {
+            try
+            {
+                var appChatUusuarioEventoCarona = new bllChatUsuarioEventoCarona(DBRepository.GetChatUsuarioEventoCaronaRepository());
+
+                var listaMensagens = appChatUusuarioEventoCarona
+                    .BuscarTodos()
+                    .Where(chat => chat.idUsuarioOrigem == LoggedUserInformation.userId)
+                    .Select(chatUsuarioEventoCarona => ChatUsuarioEventoCarona.EntityToModel(chatUsuarioEventoCarona));
+
+                return Request.CreateResponse(HttpStatusCode.OK, listaMensagens);
             }
             catch (Exception Ex)
             {

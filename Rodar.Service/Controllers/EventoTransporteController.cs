@@ -131,7 +131,7 @@ namespace Rodar.Service.Controllers
                 .Select(eventoTransporte => EventoTransporte.EntityToModel(eventoTransporte))
                 .Where(le => le.idUsuarioTransportador == LoggedUserInformation.userId
                 || (le.Passageiros != null ? le.Passageiros.Exists(p => p.idUsuario == LoggedUserInformation.userId) : true)
-                && le.Evento.dataHoraInicio >= DateTime.Now)
+                && le.dataHoraPrevisaoChegada >= DateTime.Now)
                 .ToList();
 
             return Request.CreateResponse(HttpStatusCode.OK, listaEventos);
@@ -149,7 +149,7 @@ namespace Rodar.Service.Controllers
                 .Select(eventoTransporte => EventoTransporte.EntityToModel(eventoTransporte))
                 .Where(le => le.idUsuarioTransportador == LoggedUserInformation.userId
                 || (le.Passageiros != null ? le.Passageiros.Exists(p => p.idUsuario == LoggedUserInformation.userId) : true)
-                && le.Evento.dataHoraInicio <= DateTime.Now)
+                && le.dataHoraPrevisaoChegada <= DateTime.Now)
                 .ToList();
 
             return Request.CreateResponse(HttpStatusCode.OK, listaEventos);
@@ -208,10 +208,52 @@ namespace Rodar.Service.Controllers
                 avaliacaoTransporteModel.idUsuarioAvaliado = appEventoTransporte.Buscar(avaliacaoTransporte.idEventoTransporte).idUsuarioTransportador;
                 avaliacaoTransporteModel.Avaliacao = avaliacaoTransporte.Avaliacao;
                 avaliacaoTransporteModel.idEventoTransporte = avaliacaoTransporte.idEventoTransporte;
+                avaliacaoTransporteModel.Mensagem = avaliacaoTransporte.Mensagem;
 
                 appAvaliacaoTransporte.Cadastrar(AvaliacaoTransporte.ModelToEntity(avaliacaoTransporteModel));
 
                 return Request.CreateResponse(HttpStatusCode.OK, avaliacaoTransporteModel);
+            }
+            catch (Exception Ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, Ex.Message);
+            }
+        }
+
+        [HttpPost]
+        [ActionName("EnviarMensagemUsuarioTansporte")]
+        public HttpResponseMessage EnviarMensagemUsuarioTansporte([System.Web.Http.FromBody] ChatUsuarioEventoTransporte chatUsuarioEventoTransporte)
+        {
+            try
+            {
+                var appChatUsuarioEventoTransporte = new bllChatUsuarioEventoTransporte(DBRepository.GetChatUsuarioEventoTransporteRepository());
+
+                chatUsuarioEventoTransporte.idUsuarioOrigem = LoggedUserInformation.userId;
+
+                appChatUsuarioEventoTransporte.Cadastrar(ChatUsuarioEventoTransporte.ModelToEntity(chatUsuarioEventoTransporte));
+
+                return Request.CreateResponse(HttpStatusCode.OK, chatUsuarioEventoTransporte);
+            }
+            catch (Exception Ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, Ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [ActionName("BuscarMensagensEnviadasUsuario")]
+        public HttpResponseMessage BuscarMensagensUsuario()
+        {
+            try
+            {
+                var appChatUusuarioEventoTransporte = new bllChatUsuarioEventoTransporte(DBRepository.GetChatUsuarioEventoTransporteRepository());
+
+                var listaMensagens = appChatUusuarioEventoTransporte
+                    .BuscarTodos()
+                    .Where(chat => chat.idUsuarioOrigem == LoggedUserInformation.userId)
+                    .Select(chatUsuarioEventoTransporte => ChatUsuarioEventoTransporte.EntityToModel(chatUsuarioEventoTransporte));
+
+                return Request.CreateResponse(HttpStatusCode.OK, listaMensagens);
             }
             catch (Exception Ex)
             {

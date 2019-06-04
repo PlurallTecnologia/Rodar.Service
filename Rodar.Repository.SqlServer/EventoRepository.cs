@@ -63,9 +63,9 @@ namespace Rodar.Repository.SqlServer
                 cmdInserir.Parameters["idEvento"].Direction = ParameterDirection.Output;
 
                 if (evento.DataCriacao == null)
-                    cmdInserir.Parameters.Add("dataCriacao", SqlDbType.VarChar).Value = DBNull.Value;
+                    cmdInserir.Parameters.Add("dataCriacao", SqlDbType.DateTime).Value = DBNull.Value;
                 else
-                    cmdInserir.Parameters.Add("dataCriacao", SqlDbType.VarChar).Value = evento.DataCriacao;
+                    cmdInserir.Parameters.Add("dataCriacao", SqlDbType.DateTime).Value = evento.DataCriacao;
                 
                 cmdInserir.Parameters.Add("idUsuarioCriacao", SqlDbType.Int).Value = evento.idUsuarioCriacao;
                 cmdInserir.Parameters.Add("nomeEvento", SqlDbType.VarChar).Value = evento.nomeEvento;
@@ -145,9 +145,9 @@ namespace Rodar.Repository.SqlServer
                 cmdAtualizar.Parameters.Add("idEvento", SqlDbType.Int).Value = evento.idEvento;
 
                 if (evento.DataCriacao == null)
-                    cmdAtualizar.Parameters.Add("dataCriacao", SqlDbType.VarChar).Value = DBNull.Value;
+                    cmdAtualizar.Parameters.Add("dataCriacao", SqlDbType.DateTime).Value = DBNull.Value;
                 else
-                    cmdAtualizar.Parameters.Add("dataCriacao", SqlDbType.VarChar).Value = evento.DataCriacao;
+                    cmdAtualizar.Parameters.Add("dataCriacao", SqlDbType.DateTime).Value = evento.DataCriacao;
 
                 cmdAtualizar.Parameters.Add("nomeEvento", SqlDbType.VarChar).Value = evento.nomeEvento;
 

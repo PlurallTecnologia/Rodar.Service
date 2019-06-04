@@ -42,6 +42,8 @@
   <ItemGroup>
     <Compile Include="bllAvaliacaoCarona.cs" />
     <Compile Include="bllAvaliacaoTransporte.cs" />
+    <Compile Include="bllChatUsuarioEventoCarona.cs" />
+    <Compile Include="bllChatUsuarioEventoTransporte.cs" />
     <Compile Include="bllEvento.cs" />
     <Compile Include="bllEventoCarona.cs" />
     <Compile Include="bllEventoCaronaPassageiro.cs" />

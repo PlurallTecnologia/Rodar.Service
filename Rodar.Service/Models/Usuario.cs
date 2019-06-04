@@ -29,20 +29,24 @@ namespace Rodar.Service.Models
         public bool Transportador { get; set; }
         public bool OrganizadorEvento { get; set; }
         public float Avaliacao { get; set; }
+        public string tokenNotificacao { get; set; }
 
         public static Usuario EntityToModel(Domain.Entity.Usuario usuario)
         {
+            if (usuario == null)
+                return null;
+
             var appAvaliacaoCarona = new bllAvaliacaoCarona(DBRepository.GetAvaliacaoCaronaRepository());
             var appAvaliacaoTransporte = new bllAvaliacaoTransporte(DBRepository.GetAvaliacaoTransporteRepository());
 
             var listaAvaliacoesCarona = appAvaliacaoCarona.BuscarTodos();
             var listaAvaliacoesTransporte = appAvaliacaoTransporte.BuscarTodos();
             
-            var somaAvaliacoesCarona = 0;
-            var quantidadeAvaliacoesCarona = 0;
+            var somaAvaliacoesCarona = 0f;
+            var quantidadeAvaliacoesCarona = 0f;
 
-            var somaAvaliacoesTransporte =  0;
-            var quantidadeAvaliacoesTransporte = 0;
+            var somaAvaliacoesTransporte =  0f;
+            var quantidadeAvaliacoesTransporte = 0f;
 
             if (listaAvaliacoesCarona != null)
             {
@@ -59,7 +63,10 @@ namespace Rodar.Service.Models
             var totalSomaAvaliacoes = somaAvaliacoesCarona + somaAvaliacoesTransporte;
             var totalQuantidadeAvaliacoes = quantidadeAvaliacoesCarona + quantidadeAvaliacoesTransporte;
 
-            var mediaAvaliacoes = Convert.ToSingle(totalSomaAvaliacoes) / Convert.ToSingle(totalQuantidadeAvaliacoes);
+            var mediaAvaliacoes = totalSomaAvaliacoes / totalQuantidadeAvaliacoes;
+
+            if (float.IsNaN(mediaAvaliacoes))
+                mediaAvaliacoes = -1;
 
             return new Usuario()
             {
@@ -82,7 +89,8 @@ namespace Rodar.Service.Models
                 urlImagemSelfie = usuario.urlImagemSelfie,
                 OrganizadorEvento = usuario.OrganizadorEvento,
                 Transportador = usuario.Transportador,
-                Avaliacao = mediaAvaliacoes
+                Avaliacao = mediaAvaliacoes,
+                tokenNotificacao = usuario.tokenNotificacao
             };
         }
 
@@ -108,7 +116,8 @@ namespace Rodar.Service.Models
                 urlImagemRGTras = usuario.urlImagemRGTras,
                 urlImagemSelfie = usuario.urlImagemSelfie,
                 OrganizadorEvento = usuario.OrganizadorEvento,
-                Transportador = usuario.Transportador
+                Transportador = usuario.Transportador,
+                tokenNotificacao = usuario.tokenNotificacao
             };
         }
     }

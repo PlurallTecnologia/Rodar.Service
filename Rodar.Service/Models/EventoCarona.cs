@@ -28,6 +28,9 @@ namespace Rodar.Service.Models
         public decimal valorParticipacao { get; set; }
         public string Mensagem { get; set; }
 
+        public DateTime? dataHoraPartida { get; set; }
+        public DateTime? dataHoraPrevisaoChegada { get; set; }
+
         public int quantidadeVagas { get; set; }
 
         public int quantidadeVagasDisponiveis { get; set; }
@@ -35,14 +38,20 @@ namespace Rodar.Service.Models
 
         public List<Usuario> Passageiros { get; set; }
 
+        public AvaliacaoCarona avaliacaoCarona { get; set; }
+
         public static EventoCarona EntityToModel(Domain.Entity.EventoCarona eventoCarona)
         {
+            if (eventoCarona == null)
+                return null;
+
             var appEventoCaronaPassageiro = new bllEventoCaronaPassageiro(DBRepository.GetEventoCaronaPassageiroRepository());
             var quantidadeVagasOcupadas = appEventoCaronaPassageiro.BuscarTodos()?.Where(ecp => ecp.idEventoCarona == eventoCarona.idEventoCarona).Count();
 
             var appEvento = new bllEvento(DBRepository.GetEventoRepository());
             var appUsuario = new bllUsuario(DBRepository.GetUsuarioRepository());
             var appUsuarioCaronaPassageiros = new bllEventoCaronaPassageiro(DBRepository.GetEventoCaronaPassageiroRepository());
+            var appAvaliacaoCarona = new bllAvaliacaoCarona(DBRepository.GetAvaliacaoCaronaRepository());
 
             return new EventoCarona()
             {
@@ -65,11 +74,16 @@ namespace Rodar.Service.Models
                 Mensagem = eventoCarona.Mensagem,
                 valorParticipacao = eventoCarona.valorParticipacao,
 
+                dataHoraPartida = eventoCarona.dataHoraPartida,
+                dataHoraPrevisaoChegada = eventoCarona.dataHoraPrevisaoChegada,
+
                 quantidadeVagas = eventoCarona.quantidadeVagas,
                 quantidadeVagasDisponiveis = eventoCarona.quantidadeVagas - (quantidadeVagasOcupadas != null ? quantidadeVagasOcupadas.Value : 0),
                 quantidadeVagasOcupadas = (quantidadeVagasOcupadas != null ? quantidadeVagasOcupadas.Value : 0),
 
-                Passageiros = appUsuarioCaronaPassageiros.BuscarPorCarona(eventoCarona.idEventoCarona)?.Select(ecp => Usuario.EntityToModel(appUsuario.BuscarPorId(ecp.idUsuarioPassageiro))).ToList()
+                Passageiros = appUsuarioCaronaPassageiros.BuscarPorCarona(eventoCarona.idEventoCarona)?.Select(ecp => Usuario.EntityToModel(appUsuario.BuscarPorId(ecp.idUsuarioPassageiro))).ToList(),
+
+                avaliacaoCarona = AvaliacaoCarona.EntityToModel(appAvaliacaoCarona.BuscarTodos()?.Where(ac => ac.idEventoCarona == eventoCarona.idEventoCarona).FirstOrDefault())
             };
         }
 
@@ -92,7 +106,10 @@ namespace Rodar.Service.Models
                 Mensagem = eventoCarona.Mensagem,
                 quantidadeVagas = eventoCarona.quantidadeVagas,
 
-                valorParticipacao = eventoCarona.valorParticipacao
+                valorParticipacao = eventoCarona.valorParticipacao,
+
+                dataHoraPartida = eventoCarona.dataHoraPartida,
+                dataHoraPrevisaoChegada = eventoCarona.dataHoraPrevisaoChegada
             };
         }
     }

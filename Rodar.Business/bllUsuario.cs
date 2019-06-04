@@ -104,5 +104,22 @@ namespace Rodar.Business
                 throw;
             }
         }
+
+        public void AtualizarTokenNotificacao(int idUsuario, string novoTokenNotificacao)
+        {
+            try
+            {
+                var usuario = _usuarioRepository.BuscarPorId(idUsuario);
+
+                if (usuario != null && !string.IsNullOrWhiteSpace(novoTokenNotificacao))
+                    usuario.tokenNotificacao = novoTokenNotificacao;
+
+                _usuarioRepository.Atualizar(usuario);
+            }
+            catch
+            {
+                throw;
+            }
+        }
     }
 }

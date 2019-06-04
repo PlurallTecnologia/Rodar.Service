@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Rodar.Domain.Repository
 {
-    public interface IAvaliacaoCaronaRepository
+    public interface IChatUsuarioEventoCaronaRepository
     {
-        int Cadastrar(AvaliacaoCarona avaliacaoCarona);
-        List<AvaliacaoCarona> BuscarTodos();
+        int Cadastrar(ChatUsuarioEventoCarona chatUsuarioEventoCarona);
+        List<ChatUsuarioEventoCarona> BuscarTodos();
     }
 }

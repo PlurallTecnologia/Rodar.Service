@@ -12,6 +12,7 @@ namespace TestApi.Models
         public int idUsuarioAvaliador { get; set; }
         public int idUsuarioAvaliado { get; set; }
         public int idEventoTransporte { get; set; }
-        public int Avaliacao { get; set; }
+        public int Avaliacao { get; set; }  
+        public string Mensagem { get; set; }
     }
 }

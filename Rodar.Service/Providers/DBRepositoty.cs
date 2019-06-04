@@ -52,5 +52,15 @@ namespace Rodar.Service.Providers
         {
             return new Repository.SqlServer.AvaliacaoCaronaRepository();
         }
+
+        public static IChatUsuarioEventoCaronaRepository GetChatUsuarioEventoCaronaRepository()
+        {
+            return new Repository.SqlServer.ChatUsuarioEventoCaronaRepository();
+        }
+
+        public static IChatUsuarioEventoTransporteRepository GetChatUsuarioEventoTransporteRepository()
+        {
+            return new Repository.SqlServer.ChatUsuarioEventoTransporteRepository();
+        }
     }
 }

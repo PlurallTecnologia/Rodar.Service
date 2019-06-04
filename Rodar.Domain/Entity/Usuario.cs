@@ -26,5 +26,6 @@ namespace Rodar.Domain.Entity
         public string urlImagemCPF { get; set; }
         public bool Transportador { get; set; }
         public bool OrganizadorEvento { get; set; }
+        public string tokenNotificacao { get; set; }
     }
 }

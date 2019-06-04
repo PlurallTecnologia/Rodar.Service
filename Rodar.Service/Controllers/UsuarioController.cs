@@ -176,6 +176,24 @@ namespace Rodar.Service.Controllers
             return Request.CreateResponse(HttpStatusCode.Created, "Imagens enviadas com sucesso"); ;
         }
 
+        [HttpPost]
+        [ActionName("AtualizarTokenNotificacao")]
+        public HttpResponseMessage AtualizarTokenNotificacao(string novoTokenNotificacao)
+        {
+            try
+            {
+                bllUsuario appUsuario = new bllUsuario(DBRepository.GetUsuarioRepository());
+
+                appUsuario.AtualizarTokenNotificacao(LoggedUserInformation.userId, novoTokenNotificacao);
+
+                return Request.CreateResponse(HttpStatusCode.OK);
+            }
+            catch (Exception Ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, Ex.Message);
+            }
+        }
+
         //public async Task<HttpResponseMessage> EnviarSelfie()
         //{
         //    Dictionary<string, object> dict = new Dictionary<string, object>();

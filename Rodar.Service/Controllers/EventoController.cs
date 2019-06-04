@@ -87,7 +87,8 @@ namespace Rodar.Service.Controllers
         [HttpGet]
         [ActionName("BuscarTodos")]
         [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
-        public HttpResponseMessage BuscarTodos(bool somenteMeusEventos = false, bool somenteMeusFavoritos = false)
+        public HttpResponseMessage BuscarTodos(bool somenteMeusEventos = false, bool somenteMeusFavoritos = false, 
+            string nomeEvento = null, string cidadeUfEvento = null, string dataInicial = null, string dataFinal = null)
         {
             try
             {
@@ -122,7 +123,7 @@ namespace Rodar.Service.Controllers
 
                 var listaCidadesUfs = appEvento
                     .BuscarTodos()
-                    .Select(evento => new { evento.enderecoCidade, evento.enderecoUF })
+                    .Select(evento => String.Concat(evento.enderecoCidade, ", ", evento.enderecoUF))
                     .Distinct()
                     .ToList();
 

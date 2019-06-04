@@ -58,6 +58,8 @@
             this.btnBuscarTransportesHistorico = new System.Windows.Forms.Button();
             this.btnAvaliarTransporte = new System.Windows.Forms.Button();
             this.btnAvaliarCarona = new System.Windows.Forms.Button();
+            this.btnAtualizarToken = new System.Windows.Forms.Button();
+            this.txtEndereco = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // btnLogar
@@ -359,11 +361,30 @@
             this.btnAvaliarCarona.UseVisualStyleBackColor = true;
             this.btnAvaliarCarona.Click += new System.EventHandler(this.btnAvaliarCarona_Click);
             // 
+            // btnAtualizarToken
+            // 
+            this.btnAtualizarToken.Location = new System.Drawing.Point(302, 293);
+            this.btnAtualizarToken.Name = "btnAtualizarToken";
+            this.btnAtualizarToken.Size = new System.Drawing.Size(159, 37);
+            this.btnAtualizarToken.TabIndex = 30;
+            this.btnAtualizarToken.Text = "Atualizar Token";
+            this.btnAtualizarToken.UseVisualStyleBackColor = true;
+            this.btnAtualizarToken.Click += new System.EventHandler(this.btnAtualizarToken_Click);
+            // 
+            // txtEndereco
+            // 
+            this.txtEndereco.Location = new System.Drawing.Point(569, 12);
+            this.txtEndereco.Name = "txtEndereco";
+            this.txtEndereco.Size = new System.Drawing.Size(278, 20);
+            this.txtEndereco.TabIndex = 31;
+            // 
             // formTeste
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(946, 525);
+            this.Controls.Add(this.txtEndereco);
+            this.Controls.Add(this.btnAtualizarToken);
             this.Controls.Add(this.btnAvaliarCarona);
             this.Controls.Add(this.btnAvaliarTransporte);
             this.Controls.Add(this.btnBuscarCaronasHistorico);
@@ -398,6 +419,7 @@
             this.Text = "Teste";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -433,6 +455,8 @@
         private System.Windows.Forms.Button btnBuscarTransportesHistorico;
         private System.Windows.Forms.Button btnAvaliarTransporte;
         private System.Windows.Forms.Button btnAvaliarCarona;
+        private System.Windows.Forms.Button btnAtualizarToken;
+        private System.Windows.Forms.TextBox txtEndereco;
     }
 }
 

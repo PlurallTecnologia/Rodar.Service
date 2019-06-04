@@ -27,22 +27,32 @@ namespace Rodar.Service.Models
         public string enderecoPartidaCEP { get; set; }
         public string enderecoPartidaCidade { get; set; }
         public string enderecoPartidaUF { get; set; }
+
         public decimal valorParticipacao { get; set; }
         public string Mensagem { get; set; }
+
+        public DateTime? dataHoraPartida { get; set; }
+        public DateTime? dataHoraPrevisaoChegada { get; set; }
 
         public int quantidadeVagasDisponiveis { get; set; }
         public int quantidadeVagasOcupadas { get; set; }
 
         public List<Usuario> Passageiros { get; set; }
 
+        public AvaliacaoTransporte avaliacaoTransporte { get; set; }
+            
         public static EventoTransporte EntityToModel(Domain.Entity.EventoTransporte eventoTransporte)
         {
+            if (eventoTransporte == null)
+                return null;
+
             var appEventoTransportePassageiro = new bllEventoTransportePassageiro(DBRepository.GetEventoTransportePassageiroRepository());
             var quantidadeVagasOcupadas = (appEventoTransportePassageiro.BuscarTodos()?.Where(ecp => ecp.idEventoTransporte == eventoTransporte.idEventoTransporte).Count());
 
             var appEvento = new bllEvento(DBRepository.GetEventoRepository());
             var appUsuario = new bllUsuario(DBRepository.GetUsuarioRepository());
             var appUsuarioTransportePassageiros = new bllEventoTransportePassageiro(DBRepository.GetEventoTransportePassageiroRepository());
+            var appAvaliacaoTransporte = new bllAvaliacaoTransporte(DBRepository.GetAvaliacaoTransporteRepository());
 
             return new EventoTransporte()
             {
@@ -63,12 +73,18 @@ namespace Rodar.Service.Models
                 usuarioTransportador = Usuario.EntityToModel(appUsuario.BuscarPorId(eventoTransporte.idUsuarioTransportador)),
 
                 Mensagem = eventoTransporte.Mensagem,
-                quantidadeVagas = eventoTransporte.quantidadeVagas,
                 valorParticipacao = eventoTransporte.valorParticipacao,
+
+                dataHoraPartida = eventoTransporte.dataHoraPartida,
+                dataHoraPrevisaoChegada = eventoTransporte.dataHoraPrevisaoChegada,
+
+                quantidadeVagas = eventoTransporte.quantidadeVagas,
                 quantidadeVagasDisponiveis = eventoTransporte.quantidadeVagas - (quantidadeVagasOcupadas != null ? quantidadeVagasOcupadas.Value : 0),
                 quantidadeVagasOcupadas = (quantidadeVagasOcupadas != null ? quantidadeVagasOcupadas.Value : 0),
 
-                Passageiros = appUsuarioTransportePassageiros.BuscarPorTransporte(eventoTransporte.idEventoTransporte)?.Select(ecp => Usuario.EntityToModel(appUsuario.BuscarPorId(ecp.idUsuarioPassageiro))).ToList()
+                Passageiros = appUsuarioTransportePassageiros.BuscarPorTransporte(eventoTransporte.idEventoTransporte)?.Select(ecp => Usuario.EntityToModel(appUsuario.BuscarPorId(ecp.idUsuarioPassageiro))).ToList(),
+
+                avaliacaoTransporte = AvaliacaoTransporte.EntityToModel(appAvaliacaoTransporte.BuscarTodos()?.Where(at => at.idEventoTransporte == eventoTransporte.idEventoTransporte).FirstOrDefault())
             };
         }
 
@@ -88,7 +104,9 @@ namespace Rodar.Service.Models
                 idUsuarioTransportador = eventoTransporte.idUsuarioTransportador,
                 Mensagem = eventoTransporte.Mensagem,
                 quantidadeVagas = eventoTransporte.quantidadeVagas,
-                valorParticipacao = eventoTransporte.valorParticipacao
+                valorParticipacao = eventoTransporte.valorParticipacao,
+                dataHoraPartida = eventoTransporte.dataHoraPartida,
+                dataHoraPrevisaoChegada = eventoTransporte.dataHoraPrevisaoChegada,
             };
         }
     }

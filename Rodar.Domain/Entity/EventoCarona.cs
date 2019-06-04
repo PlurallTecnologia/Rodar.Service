@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 
 namespace Rodar.Domain.Entity
 {
@@ -19,6 +16,8 @@ namespace Rodar.Domain.Entity
         public string enderecoPartidaCidade { get; set; }
         public string enderecoPartidaUF { get; set; }
         public decimal valorParticipacao { get; set; }
+        public DateTime? dataHoraPartida { get; set; }
+        public DateTime? dataHoraPrevisaoChegada { get; set; }
         public string Mensagem { get; set; }
     }
 }

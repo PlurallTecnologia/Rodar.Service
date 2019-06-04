@@ -1,9 +1,6 @@
 ﻿using Rodar.Domain.Repository;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Rodar.Domain.Entity;
 using System.Data.SqlClient;
 using Rodar.Utilities;
@@ -29,6 +26,8 @@ namespace Rodar.Repository.SqlServer
                                                 ,enderecoPartidaCidade
                                                 ,enderecoPartidaUF
                                                 ,valorParticipacao
+                                                ,dataHoraPartida
+                                                ,dataHoraPrevisaoChegada
                                                 ,Mensagem)
                                             VALUES
                                                 (@idEvento
@@ -42,6 +41,8 @@ namespace Rodar.Repository.SqlServer
                                                 ,@enderecoPartidaCidade
                                                 ,@enderecoPartidaUF
                                                 ,@valorParticipacao
+                                                ,@dataHoraPartida
+                                                ,@dataHoraPrevisaoChegada
                                                 ,@Mensagem);
                                                 SET @idEventoTransporte = SCOPE_IDENTITY()";
 
@@ -65,6 +66,17 @@ namespace Rodar.Repository.SqlServer
                 cmdInserir.Parameters.Add("enderecoPartidaCidade", SqlDbType.VarChar).Value = eventoTransporte.enderecoPartidaCidade;
                 cmdInserir.Parameters.Add("enderecoPartidaUF", SqlDbType.VarChar).Value = eventoTransporte.enderecoPartidaUF;
                 cmdInserir.Parameters.Add("valorParticipacao", SqlDbType.Decimal).Value = eventoTransporte.valorParticipacao;
+
+                if (eventoTransporte.dataHoraPartida == null)
+                    cmdInserir.Parameters.Add("dataHoraPartida", SqlDbType.DateTime).Value = DBNull.Value;
+                else
+                    cmdInserir.Parameters.Add("dataHoraPartida", SqlDbType.DateTime).Value = eventoTransporte.dataHoraPartida;
+
+                if (eventoTransporte.dataHoraPrevisaoChegada == null)
+                    cmdInserir.Parameters.Add("dataHoraPrevisaoChegada", SqlDbType.DateTime).Value = DBNull.Value;
+                else
+                    cmdInserir.Parameters.Add("dataHoraPrevisaoChegada", SqlDbType.DateTime).Value = eventoTransporte.dataHoraPrevisaoChegada;
+
                 cmdInserir.Parameters.Add("Mensagem", SqlDbType.VarChar).Value = eventoTransporte.Mensagem;
 
                 try
@@ -101,6 +113,8 @@ namespace Rodar.Repository.SqlServer
                                           ,enderecoPartidaCidade = enderecoPartidaCidade
                                           ,enderecoPartidaUF = enderecoPartidaUF
                                           ,valorParticipacao = valorParticipacao
+                                          ,dataHoraPartida = @dataHoraPartida
+                                          ,dataHoraPrevisaoChegada = @dataHoraPrevisaoChegada
                                           ,Mensagem = Mensagem
                                      WHERE idEvento = @idEvento";
 
@@ -123,6 +137,17 @@ namespace Rodar.Repository.SqlServer
                 cmdAtualizar.Parameters.Add("enderecoPartidaCidade", SqlDbType.VarChar).Value = eventoTransporte.enderecoPartidaCidade;
                 cmdAtualizar.Parameters.Add("enderecoPartidaUF", SqlDbType.VarChar).Value = eventoTransporte.enderecoPartidaUF;
                 cmdAtualizar.Parameters.Add("valorParticipacao", SqlDbType.Decimal).Value = eventoTransporte.valorParticipacao;
+
+                if (eventoTransporte.dataHoraPartida == null)
+                    cmdAtualizar.Parameters.Add("dataHoraPartida", SqlDbType.DateTime).Value = DBNull.Value;
+                else
+                    cmdAtualizar.Parameters.Add("dataHoraPartida", SqlDbType.DateTime).Value = eventoTransporte.dataHoraPartida;
+
+                if (eventoTransporte.dataHoraPrevisaoChegada == null)
+                    cmdAtualizar.Parameters.Add("dataHoraPrevisaoChegada", SqlDbType.DateTime).Value = DBNull.Value;
+                else
+                    cmdAtualizar.Parameters.Add("dataHoraPrevisaoChegada", SqlDbType.DateTime).Value = eventoTransporte.dataHoraPrevisaoChegada;
+
                 cmdAtualizar.Parameters.Add("Mensagem", SqlDbType.VarChar).Value = eventoTransporte.Mensagem;
 
                 try
@@ -328,6 +353,16 @@ namespace Rodar.Repository.SqlServer
 
             if (drSelecao["valorParticipacao"] != DBNull.Value)
                 eventoTransporte.valorParticipacao = Convert.ToDecimal(drSelecao["valorParticipacao"].ToString());
+
+            if (drSelecao["dataHoraPartida"] != DBNull.Value)
+                eventoTransporte.dataHoraPartida = Convert.ToDateTime(drSelecao["dataHoraPartida"]);
+            else
+                eventoTransporte.dataHoraPartida = null;
+
+            if (drSelecao["dataHoraPrevisaoChegada"] != DBNull.Value)
+                eventoTransporte.dataHoraPrevisaoChegada = Convert.ToDateTime(drSelecao["dataHoraPrevisaoChegada"]);
+            else
+                eventoTransporte.dataHoraPrevisaoChegada = null;
 
             if (drSelecao["Mensagem"] != DBNull.Value)
                 eventoTransporte.Mensagem = drSelecao["Mensagem"].ToString();

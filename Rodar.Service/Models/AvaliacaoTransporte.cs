@@ -10,21 +10,27 @@ namespace Rodar.Service.Models
     public class AvaliacaoTransporte
     {
         public int idAvaliacaoTransporte { get; set; }
-        public int idUsuarioAvaliador { get; set; }
 
+        public int idUsuarioAvaliador { get; set; }
         public Usuario UsuarioAvaliador { get; set; }
 
         public int idUsuarioAvaliado { get; set; }
         public Usuario UsuarioAvaliado { get; set; }
 
         public int idEventoTransporte { get; set; }
-        public EventoTransporte eventoTransporte {get;set;}
+        //public EventoTransporte eventoTransporte {get;set;}
 
-        public int Avaliacao { get; set; }
+        public float Avaliacao { get; set; }
+
         public DateTime dataHoraAvaliacao { get; set; }
+
+        public string Mensagem { get; set; }
 
         public static AvaliacaoTransporte EntityToModel(Domain.Entity.AvaliacaoTransporte avaliacaoTransporte)
         {
+            if (avaliacaoTransporte == null)
+                return null;
+
             var appEventoTransporte = new bllEventoTransporte(DBRepository.GetEventoTransporteRepository());
             var appUsuario = new bllUsuario(DBRepository.GetUsuarioRepository());
 
@@ -36,13 +42,15 @@ namespace Rodar.Service.Models
                 idAvaliacaoTransporte = avaliacaoTransporte.idAvaliacaoTransporte,
 
                 idEventoTransporte = avaliacaoTransporte.idEventoTransporte,
-                eventoTransporte = EventoTransporte.EntityToModel(appEventoTransporte.Buscar(avaliacaoTransporte.idEventoTransporte)),
+                //eventoTransporte = EventoTransporte.EntityToModel(appEventoTransporte.Buscar(avaliacaoTransporte.idEventoTransporte)),
 
                 idUsuarioAvaliado = avaliacaoTransporte.idUsuarioAvaliado,
                 UsuarioAvaliado = Usuario.EntityToModel(appUsuario.BuscarPorId(avaliacaoTransporte.idUsuarioAvaliado)),
                 
                 idUsuarioAvaliador = avaliacaoTransporte.idUsuarioAvaliador,
-                UsuarioAvaliador = Usuario.EntityToModel(appUsuario.BuscarPorId(avaliacaoTransporte.idUsuarioAvaliador))
+                UsuarioAvaliador = Usuario.EntityToModel(appUsuario.BuscarPorId(avaliacaoTransporte.idUsuarioAvaliador)),
+
+                Mensagem = avaliacaoTransporte.Mensagem
             };
         }
 
@@ -56,6 +64,7 @@ namespace Rodar.Service.Models
                 idEventoTransporte = avaliacaoTransporte.idEventoTransporte,
                 idUsuarioAvaliado = avaliacaoTransporte.idUsuarioAvaliado,
                 idUsuarioAvaliador = avaliacaoTransporte.idUsuarioAvaliador,
+                Mensagem = avaliacaoTransporte.Mensagem
             };
         }
     }

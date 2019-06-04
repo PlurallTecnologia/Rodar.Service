@@ -19,6 +19,9 @@ namespace Rodar.Service.Models
 
         public static EventoCaronaPassageiro EntityToModel(Domain.Entity.EventoCaronaPassageiro eventoCaronaPassageiro)
         {
+            if (eventoCaronaPassageiro == null)
+                return null;
+
             var appUsuario = new bllUsuario(DBRepository.GetUsuarioRepository());
             var appEventoCarona = new bllEventoCarona(DBRepository.GetEventoCaronaRepository());
 

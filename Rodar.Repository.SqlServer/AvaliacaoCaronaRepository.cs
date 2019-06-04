@@ -19,24 +19,29 @@ namespace Rodar.Repository.SqlServer
                                                         ,idUsuarioAvaliado
                                                         ,idEventoCarona
                                                         ,Avaliacao
+                                                        ,Mensagem
                                                         ,dataHoraAvaliacao)
                                                     VALUES
                                                         (@idUsuarioAvaliador
                                                         ,@idUsuarioAvaliado
                                                         ,@idEventoCarona
                                                         ,@Avaliacao
+                                                        ,@Mensagem
                                                         ,GETDATE());
                                             SET @idAvaliacaoCarona = SCOPE_IDENTITY()";
 
                 SqlCommand cmdInserir = new SqlCommand(stringSQL, con);
 
+                ValidaCampos(ref avaliacaoCarona);
+
                 cmdInserir.Parameters.Add("idAvaliacaoCarona", SqlDbType.Int);
                 cmdInserir.Parameters["idAvaliacaoCarona"].Direction = ParameterDirection.Output;
 
                 cmdInserir.Parameters.Add("idUsuarioAvaliador", SqlDbType.Int).Value = avaliacaoCarona.idUsuarioAvaliador;
-                cmdInserir.Parameters.Add("idUsuarioAvaliado", SqlDbType.VarChar).Value = avaliacaoCarona.idUsuarioAvaliado;
-                cmdInserir.Parameters.Add("idEventoCarona", SqlDbType.VarChar).Value = avaliacaoCarona.idEventoCarona;
-                cmdInserir.Parameters.Add("Avaliacao", SqlDbType.VarChar).Value = avaliacaoCarona.Avaliacao;
+                cmdInserir.Parameters.Add("idUsuarioAvaliado", SqlDbType.Int).Value = avaliacaoCarona.idUsuarioAvaliado;
+                cmdInserir.Parameters.Add("idEventoCarona", SqlDbType.Int).Value = avaliacaoCarona.idEventoCarona;
+                cmdInserir.Parameters.Add("Avaliacao", SqlDbType.Float).Value = avaliacaoCarona.Avaliacao;
+                cmdInserir.Parameters.Add("Mensagem", SqlDbType.VarChar).Value = avaliacaoCarona.Mensagem;
 
                 try
                 {
@@ -106,16 +111,24 @@ namespace Rodar.Repository.SqlServer
             if (drSelecao["idUsuarioAvaliado"] != DBNull.Value)
                 avaliacaoCarona.idUsuarioAvaliado = Convert.ToInt32(drSelecao["idUsuarioAvaliado"].ToString());
 
-            if (drSelecao["idEventoTransporte"] != DBNull.Value)
-                avaliacaoCarona.idEventoCarona = Convert.ToInt32(drSelecao["idEventoTransporte"].ToString());
+            if (drSelecao["idEventoCarona"] != DBNull.Value)
+                avaliacaoCarona.idEventoCarona = Convert.ToInt32(drSelecao["idEventoCarona"].ToString());
 
             if (drSelecao["Avaliacao"] != DBNull.Value)
-                avaliacaoCarona.Avaliacao = Convert.ToInt32(drSelecao["Avaliacao"].ToString());
+                avaliacaoCarona.Avaliacao = Convert.ToSingle(drSelecao["Avaliacao"].ToString());
 
             if (drSelecao["dataHoraAvaliacao"] != DBNull.Value)
                 avaliacaoCarona.dataHoraAvaliacao = Convert.ToDateTime(drSelecao["dataHoraAvaliacao"]);
             else
                 avaliacaoCarona.dataHoraAvaliacao = null;
+
+            if (drSelecao["Mensagem"] != DBNull.Value)
+                avaliacaoCarona.Mensagem = drSelecao["Mensagem"].ToString();
+        }
+
+        private static void ValidaCampos(ref AvaliacaoCarona avaliacaoCarona)
+        {
+            if (String.IsNullOrEmpty(avaliacaoCarona.Mensagem)) { avaliacaoCarona.Mensagem = String.Empty; }
         }
     }
 }

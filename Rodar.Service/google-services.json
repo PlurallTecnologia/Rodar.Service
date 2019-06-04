@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1052620543437",
+    "firebase_url": "https://rodar-b1a03.firebaseio.com",
+    "project_id": "rodar-b1a03",
+    "storage_bucket": "rodar-b1a03.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1052620543437:android:37bdbbb517bdaeca",
+        "android_client_info": {
+          "package_name": "com.example.android.rodar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1052620543437-j47sstvaeonhj14hfu15emtvmkqtq1np.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.android.rodar",
+            "certificate_hash": "57555c70b0e0217f3517e0603a85ee1c3d73874e"
+          }
+        },
+        {
+          "client_id": "1052620543437-r4clsulj9cd9mv0tt86cntrrqut7dga6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAyFilPyPyZyJDii2YdmgR3i6xXvUMs9gI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1052620543437-r4clsulj9cd9mv0tt86cntrrqut7dga6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

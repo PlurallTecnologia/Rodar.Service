@@ -40,6 +40,9 @@ namespace Rodar.Service.Models
 
         public static Evento EntityToModel(Domain.Entity.Evento evento)
         {
+            if (evento == null)
+                return null;
+
             var appEventoFavorito = new bllEventoUsuarioFavorito(DBRepository.GetEventoUsuarioFavoritoRepository());
             var appUsuario = new bllUsuario(DBRepository.GetUsuarioRepository());
 

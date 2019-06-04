@@ -13,6 +13,6 @@ namespace TestApi.Models
         public int idUsuarioAvaliado { get; set; }
         public int idEventoCarona { get; set; }
         public int Avaliacao { get; set; }
-        public DateTime dataHoraAvaliacao { get; set; }
+        public string Mensagem { get; set; }
     }
 }

@@ -7,6 +7,9 @@ using Microsoft.Owin.Cors;
 using Microsoft.Owin.Security.OAuth;
 using Rodar.Service.App_Start;
 using System.Net.Http.Headers;
+using System.Web;
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
 
 [assembly: OwinStartup(typeof(Rodar.Service.Startup))]
 
@@ -28,9 +31,7 @@ namespace Rodar.Service
                   routeTemplate: "api/{controller}/{action}/{id}",
                   defaults: new { id = RouteParameter.Optional }
              );
-
             
-
             config.Formatters.JsonFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("text/html"));
             
             // ativando cors
@@ -39,8 +40,11 @@ namespace Rodar.Service
             // ativando a geração do token
             AtivarGeracaoTokenAcesso(app);
 
+            InicializarFirebase();
+
             // ativando configuração WebApi
             app.UseWebApi(config);
+
 
         }
 
@@ -60,14 +64,21 @@ namespace Rodar.Service
         }
 
 
-    //    public static void RegisterComponents()
-    //    {
-    //        var builder = new ContainerBuilder();
-    //        builder.RegisterType<CustomerRepository>().As<ICustomerRepository>();
-    //        builder.RegisterType<CustomerController>();
-    //        builder.RegisterType<Northwind_DBEntities>().As<INorthwind_DBEntities>();
-    //        var container = builder.Build();
-    //        DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
-    //    }
+        private void InicializarFirebase()
+        {
+            FirebaseApp.Create(new AppOptions()
+            {
+                Credential = GoogleCredential.FromFile(HttpContext.Current.Server.MapPath("~/google-account.json"))
+            });
+        }
+        //    public static void RegisterComponents()
+        //    {
+        //        var builder = new ContainerBuilder();
+        //        builder.RegisterType<CustomerRepository>().As<ICustomerRepository>();
+        //        builder.RegisterType<CustomerController>();
+        //        builder.RegisterType<Northwind_DBEntities>().As<INorthwind_DBEntities>();
+        //        var container = builder.Build();
+        //        DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
+        //    }
     }
 }

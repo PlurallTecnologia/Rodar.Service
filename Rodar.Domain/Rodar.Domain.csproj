@@ -42,6 +42,8 @@
   <ItemGroup>
     <Compile Include="Entity\AvaliacaoCarona.cs" />
     <Compile Include="Entity\AvaliacaoTransporte.cs" />
+    <Compile Include="Entity\ChatUsuarioEventoCarona.cs" />
+    <Compile Include="Entity\ChatUsuarioEventoTransporte.cs" />
     <Compile Include="Entity\Evento.cs" />
     <Compile Include="Entity\EventoCarona.cs" />
     <Compile Include="Entity\EventoCaronaPassageiro.cs" />
@@ -53,6 +55,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\IAvaliacaoCaronaRepository.cs" />
     <Compile Include="Repository\IAvaliacaoTransporteRepository.cs" />
+    <Compile Include="Repository\IChatUsuarioEventoCaronaRepository.cs" />
+    <Compile Include="Repository\IChatUsuarioEventoTransporteRepository.cs" />
     <Compile Include="Repository\IEventoCaronaPassageiroRepository.cs" />
     <Compile Include="Repository\IEventoCaronaRepository.cs" />
     <Compile Include="Repository\IEventoRepository.cs" />

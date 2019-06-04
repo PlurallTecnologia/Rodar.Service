@@ -110,6 +110,7 @@ namespace TestApi
             }
         }
 
+
         private void btnBuscar_Click(object sender, EventArgs e)
         {
             using (var client = new HttpClient())
@@ -142,9 +143,9 @@ namespace TestApi
 
                 List<KeyValuePair<string, string>> pairs = new List<KeyValuePair<string, string>>();
                 
-                pairs.Add(new KeyValuePair<string, string>("username", "mauricio.calgaro@gmail.com"));
+                pairs.Add(new KeyValuePair<string, string>("username", "3@3.com.br"));
                 //pairs.Add(new KeyValuePair<string, string>("username", "123456789"));
-                pairs.Add(new KeyValuePair<string, string>("password", "123"));
+                pairs.Add(new KeyValuePair<string, string>("password", "3"));
                 pairs.Add(new KeyValuePair<string, string>("grant_type", "password"));
 
                 FormUrlEncodedContent content = new FormUrlEncodedContent(pairs);
@@ -825,7 +826,8 @@ namespace TestApi
                 AvaliacaoTransporte eventoTransporte = new AvaliacaoTransporte
                 {
                     idEventoTransporte = 4,
-                    Avaliacao = 2
+                    Avaliacao = 2,
+                    Mensagem = "teste 123"
                 };
                 
                 var response = client.PostAsJsonAsync("api/EventoTransporte/AvaliarTransporte", eventoTransporte).Result;
@@ -847,13 +849,38 @@ namespace TestApi
                 client.DefaultRequestHeaders.Authorization =
                     new AuthenticationHeaderValue("Bearer", Authentication.access_token);
 
+                AvaliacaoCarona avaliacaoCarona = new AvaliacaoCarona
+                {
+                    idEventoCarona = 9,
+                    Avaliacao = 2,
+                    Mensagem = "teste 123"
+                };
+
+                var response = client.PostAsJsonAsync("api/EventoCarona/AvaliarCarona", avaliacaoCarona).Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var retorno = response.Content.ReadAsStringAsync().Result;
+
+                    MessageBox.Show(retorno);
+                }
+            }
+        }
+
+        private void btnAtualizarToken_Click(object sender, EventArgs e)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://localhost:50081");
+                client.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", Authentication.access_token);
+
                 List<KeyValuePair<string, string>> pairs = new List<KeyValuePair<string, string>>();
-                pairs.Add(new KeyValuePair<string, string>("idEventoCarona", "9"));
-                pairs.Add(new KeyValuePair<string, string>("avaliacao", "2"));
+                pairs.Add(new KeyValuePair<string, string>("novoTokenNotificacao", "abcdef"));
 
                 FormUrlEncodedContent content = new FormUrlEncodedContent(pairs);
 
-                var response = client.PostAsync("api/EventoCarona/AvaliarCarona", content).Result;
+                var response = client.PostAsync("api/Usuario/AtualizarTokenNotificacao", content).Result;
 
                 if (response.IsSuccessStatusCode)
                 {
