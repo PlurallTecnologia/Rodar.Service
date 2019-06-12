@@ -96,7 +96,8 @@ namespace Rodar.Service.Controllers
             {
                 bllUsuario appUsuario = new bllUsuario(DBRepository.GetUsuarioRepository());
 
-                return Request.CreateResponse(HttpStatusCode.OK, Usuario.EntityToModel(appUsuario.BuscarPorEmail(LoggedUserInformation.userEmail)));
+                //return Request.CreateResponse(HttpStatusCode.OK, Usuario.EntityToModel(appUsuario.bus BuscarPorEmail(LoggedUserInformation.userEmail)));
+                return Request.CreateResponse(HttpStatusCode.OK, Usuario.EntityToModel(appUsuario.BuscarPorId(LoggedUserInformation.userId)));
             }
             catch (Exception Ex)
             {

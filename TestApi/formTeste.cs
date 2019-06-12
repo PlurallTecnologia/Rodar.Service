@@ -260,7 +260,8 @@ namespace TestApi
                 client.DefaultRequestHeaders.Authorization =
                     new AuthenticationHeaderValue("Bearer", Authentication.access_token);
 
-                var response = client.GetAsync("api/Evento/BuscarTodos?somenteMeusEventos=true?somenteMeusFavoritos=true").Result;
+                var response = client.GetAsync("api/Evento/BuscarTodos?somenteMeusEventos=false&somenteMeusFavoritos=false&nomeEvento=uva").Result;
+                //var response = client.GetAsync("api/Evento/BuscarTodos?somenteMeusEventos=false&somenteMeusFavoritos=false&nomeEvento=uva&cidadeUfEvento=Caxias do Sul,RS&dataInicial=07/06/2019 00:00:00.000&dataFinal=07/06/2019 23:59:59.999").Result;
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -885,6 +886,30 @@ namespace TestApi
                 if (response.IsSuccessStatusCode)
                 {
                     var retorno = response.Content.ReadAsStringAsync().Result;
+
+                    MessageBox.Show(retorno);
+                }
+            }
+        }
+
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://localhost:50081");
+                client.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", Authentication.access_token);
+
+                var response = client.GetAsync("api/EventoCarona/BuscarMensagensEnviadasUsuario").Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var retorno = response.Content.ReadAsStringAsync().Result;
+
+                    var eventosCaronaRetorno = JsonConvert.DeserializeObject<List<EventoTransporte>>(retorno, new JsonSerializerSettings
+                    {
+                        NullValueHandling = NullValueHandling.Ignore
+                    });
 
                     MessageBox.Show(retorno);
                 }

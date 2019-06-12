@@ -1,13 +1,16 @@
-﻿using Newtonsoft.Json;
+﻿using FirebaseAdmin.Messaging;
+using Newtonsoft.Json;
 using Rodar.Business;
 using Rodar.Service.Globals;
 using Rodar.Service.Models;
 using Rodar.Service.Providers;
 using System;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Web;
 using System.Web.Http;
 using System.Web.Script.Services;
 
@@ -79,6 +82,23 @@ namespace Rodar.Service.Controllers
             try
             {
                 var appEventoTransporte = new bllEventoTransporte(DBRepository.GetEventoTransporteRepository());
+
+                var fileLog = HttpContext.Current.Server.MapPath("~/Log/Log.txt");
+                File.AppendAllText(fileLog, $"Entrei excluir Carona");
+
+                var appEventoCarona = new bllEventoCarona(DBRepository.GetEventoCaronaRepository());
+
+                var topic = $"transporte{idEventoTransporte}";
+
+                var message = new Message()
+                {
+                    Notification = new Notification()
+                    {
+                        Title = "TRANSPORTE EXCLUIDO",
+                        Body = $"O TRANSPORTE {idEventoTransporte} FOI EXCLUIDA COM SUCESSO",
+                    },
+                    Topic = topic,
+                };
 
                 return Request.CreateResponse(HttpStatusCode.OK, appEventoTransporte.Excluir(idEventoTransporte));
             }
@@ -250,7 +270,7 @@ namespace Rodar.Service.Controllers
 
                 var listaMensagens = appChatUusuarioEventoTransporte
                     .BuscarTodos()
-                    .Where(chat => chat.idUsuarioOrigem == LoggedUserInformation.userId)
+                    ?.Where(chat => chat.idUsuarioOrigem == LoggedUserInformation.userId)
                     .Select(chatUsuarioEventoTransporte => ChatUsuarioEventoTransporte.EntityToModel(chatUsuarioEventoTransporte));
 
                 return Request.CreateResponse(HttpStatusCode.OK, listaMensagens);

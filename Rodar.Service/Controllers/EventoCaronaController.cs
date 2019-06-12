@@ -300,7 +300,7 @@ namespace Rodar.Service.Controllers
 
                 var listaMensagens = appChatUusuarioEventoCarona
                     .BuscarTodos()
-                    .Where(chat => chat.idUsuarioOrigem == LoggedUserInformation.userId)
+                    ?.Where(chat => chat.idUsuarioOrigem == LoggedUserInformation.userId)
                     .Select(chatUsuarioEventoCarona => ChatUsuarioEventoCarona.EntityToModel(chatUsuarioEventoCarona));
 
                 return Request.CreateResponse(HttpStatusCode.OK, listaMensagens);

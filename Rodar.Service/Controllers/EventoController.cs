@@ -4,6 +4,7 @@ using Rodar.Service.Models;
 using Rodar.Service.Providers;
 using System;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -88,19 +89,35 @@ namespace Rodar.Service.Controllers
         [ActionName("BuscarTodos")]
         [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
         public HttpResponseMessage BuscarTodos(bool somenteMeusEventos = false, bool somenteMeusFavoritos = false, 
-            string nomeEvento = null, string cidadeUfEvento = null, string dataInicial = null, string dataFinal = null)
+            string nomeEvento = null, string cidadeUfEvento = null, string dataEvento = null)
         {
             try
             {
+                var fileLog = HttpContext.Current.Server.MapPath("~/Log/Log.txt");
+                File.AppendAllText(fileLog, $"NomeEvento: {nomeEvento} CidadeEvento:{cidadeUfEvento} DataEvento:{dataEvento}");
+                File.AppendAllText(fileLog, System.Environment.NewLine);
+
                 var appEvento = new bllEvento(DBRepository.GetEventoRepository());
                 var appEventoFavorito = new bllEventoUsuarioFavorito(DBRepository.GetEventoUsuarioFavoritoRepository());
 
                 var idUsuario = (somenteMeusEventos ? Globals.LoggedUserInformation.userId : 0);
                 var listaEventos = appEvento
                     .BuscarPorUsuario(idUsuario)
-                    .Select(evento => Evento.EntityToModel(evento))
+                    ?.Select(evento => Evento.EntityToModel(evento))
                     .ToList();
 
+                if (!string.IsNullOrWhiteSpace(nomeEvento))
+                    listaEventos = listaEventos.Where(le => le.nomeEvento.ToUpper().Contains(nomeEvento.ToUpper().Trim())).ToList();
+
+                if (!string.IsNullOrWhiteSpace(cidadeUfEvento))
+                {
+                    var cidadeUf = cidadeUfEvento.Split(',');
+                    listaEventos = listaEventos.Where(le => le.enderecoCidade.ToUpper().Contains(cidadeUf[0].ToUpper().Trim()) && le.enderecoUF.ToUpper().Contains(cidadeUf[1].ToUpper().Trim())).ToList();
+                }
+
+                if (!string.IsNullOrWhiteSpace(dataEvento))
+                    listaEventos = listaEventos.Where(le => le.dataHoraInicio.Value.ToString("dd/MM/yyyy") == Convert.ToDateTime(dataEvento.Trim()).ToString("dd/MM/yyyy")).ToList();
+                
                 if (somenteMeusFavoritos)
                     listaEventos = listaEventos.Where(evento => evento.Favorito).ToList();
 

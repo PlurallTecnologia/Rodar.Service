@@ -60,11 +60,13 @@
             this.btnAvaliarCarona = new System.Windows.Forms.Button();
             this.btnAtualizarToken = new System.Windows.Forms.Button();
             this.txtEndereco = new System.Windows.Forms.TextBox();
+            this.button1 = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnLogar
             // 
-            this.btnLogar.Location = new System.Drawing.Point(161, 20);
+            this.btnLogar.Location = new System.Drawing.Point(320, 20);
             this.btnLogar.Name = "btnLogar";
             this.btnLogar.Size = new System.Drawing.Size(115, 23);
             this.btnLogar.TabIndex = 0;
@@ -104,7 +106,7 @@
             // 
             // btnAutenticar
             // 
-            this.btnAutenticar.Location = new System.Drawing.Point(289, 20);
+            this.btnAutenticar.Location = new System.Drawing.Point(448, 20);
             this.btnAutenticar.Name = "btnAutenticar";
             this.btnAutenticar.Size = new System.Drawing.Size(115, 23);
             this.btnAutenticar.TabIndex = 4;
@@ -363,26 +365,47 @@
             // 
             // btnAtualizarToken
             // 
-            this.btnAtualizarToken.Location = new System.Drawing.Point(302, 293);
+            this.btnAtualizarToken.Location = new System.Drawing.Point(376, 293);
             this.btnAtualizarToken.Name = "btnAtualizarToken";
             this.btnAtualizarToken.Size = new System.Drawing.Size(159, 37);
             this.btnAtualizarToken.TabIndex = 30;
-            this.btnAtualizarToken.Text = "Atualizar Token";
+            this.btnAtualizarToken.Text = "Atualizar Token Notificação";
             this.btnAtualizarToken.UseVisualStyleBackColor = true;
             this.btnAtualizarToken.Click += new System.EventHandler(this.btnAtualizarToken_Click);
             // 
             // txtEndereco
             // 
-            this.txtEndereco.Location = new System.Drawing.Point(569, 12);
+            this.txtEndereco.Location = new System.Drawing.Point(532, 481);
             this.txtEndereco.Name = "txtEndereco";
             this.txtEndereco.Size = new System.Drawing.Size(278, 20);
             this.txtEndereco.TabIndex = 31;
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(270, 336);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(191, 37);
+            this.button1.TabIndex = 32;
+            this.button1.Text = "Buscar Mensagens Carona";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click_1);
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(467, 336);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(191, 37);
+            this.button2.TabIndex = 33;
+            this.button2.Text = "Buscar Mensagens Transporte";
+            this.button2.UseVisualStyleBackColor = true;
             // 
             // formTeste
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(946, 525);
+            this.Controls.Add(this.button2);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.txtEndereco);
             this.Controls.Add(this.btnAtualizarToken);
             this.Controls.Add(this.btnAvaliarCarona);
@@ -457,6 +480,8 @@
         private System.Windows.Forms.Button btnAvaliarCarona;
         private System.Windows.Forms.Button btnAtualizarToken;
         private System.Windows.Forms.TextBox txtEndereco;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button button2;
     }
 }
 
