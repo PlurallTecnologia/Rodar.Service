@@ -18,7 +18,7 @@ namespace Rodar.Service.Controllers
             try
             {
                 var appFavorito = new bllEventoUsuarioFavorito(DBRepository.GetEventoUsuarioFavoritoRepository());
-                appFavorito.AdicionarFavorito(idEvento, LoggedUserInformation.userId);
+                appFavorito.AdicionarFavorito(idEvento, LoggedUserInformation.getUserId(User.Identity));
 
                 return Request.CreateResponse(HttpStatusCode.OK);
             }
@@ -35,7 +35,7 @@ namespace Rodar.Service.Controllers
             try
             {
                 var appFavorito = new bllEventoUsuarioFavorito(DBRepository.GetEventoUsuarioFavoritoRepository());
-                appFavorito.RemoverFavorito(idEvento, LoggedUserInformation.userId);
+                appFavorito.RemoverFavorito(idEvento, LoggedUserInformation.getUserId(User.Identity));
 
                 return Request.CreateResponse(HttpStatusCode.OK);
             }

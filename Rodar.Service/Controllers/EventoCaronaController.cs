@@ -31,9 +31,8 @@ namespace Rodar.Service.Controllers
             {
                 var appEventoCarona = new bllEventoCarona(DBRepository.GetEventoCaronaRepository());
 
-                eventoCarona.idUsuarioMotorista = LoggedUserInformation.userId;
-
-                appEventoCarona.Cadastrar(EventoCarona.ModelToEntity(eventoCarona));
+                eventoCarona.idUsuarioMotorista = LoggedUserInformation.getUserId(User.Identity);
+                eventoCarona.idEventoCarona = appEventoCarona.Cadastrar(EventoCarona.ModelToEntity(eventoCarona));
 
                 return Request.CreateResponse(HttpStatusCode.OK, eventoCarona);
             }
@@ -83,8 +82,8 @@ namespace Rodar.Service.Controllers
         {
             try
             {
-                var fileLog = HttpContext.Current.Server.MapPath("~/Log/Log.txt");
-                File.AppendAllText(fileLog, $"Entrei excluir Carona");
+                //var fileLog = HttpContext.Current.Server.MapPath("~/Log/Log.txt");
+                //File.AppendAllText(fileLog, $"Entrei excluir Carona");
 
                 var appEventoCarona = new bllEventoCarona(DBRepository.GetEventoCaronaRepository());
 
@@ -121,7 +120,7 @@ namespace Rodar.Service.Controllers
 
                 var listaEventos = appEventoCarona
                     .BuscarTodos()
-                    .Where(le => le.idUsuarioMotorista == LoggedUserInformation.userId)
+                    .Where(le => le.idUsuarioMotorista == LoggedUserInformation.getUserId(User.Identity))
                     .Select(eventoCarona => EventoCarona.EntityToModel(eventoCarona))
                     .ToList();
 
@@ -136,18 +135,41 @@ namespace Rodar.Service.Controllers
         [HttpGet]
         [ActionName("BuscarPorEvento")]
         [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
-        public HttpResponseMessage BuscarPorEvento(int idEvento)
+        public HttpResponseMessage BuscarPorEvento(int idEvento,
+                                                    string cidadeUfPartida = null,
+                                                    string dataPartida = null,
+                                                    string valorInicial = null,
+                                                    string valorFinal = null,
+                                                    string vagasDisponiveis = null)
         {
             try
             {
                 var appEventoCarona = new bllEventoCarona(DBRepository.GetEventoCaronaRepository());
 
-                var listaEventos = appEventoCarona
+                var listaCaronas = appEventoCarona
                     .BuscarPorEvento(idEvento)?
                     .Select(eventoCarona => EventoCarona.EntityToModel(eventoCarona))
                     .ToList();
 
-                return Request.CreateResponse(HttpStatusCode.OK, listaEventos);
+                if (!string.IsNullOrWhiteSpace(cidadeUfPartida))
+                {
+                    var cidadeUf = cidadeUfPartida.Split(',');
+                    listaCaronas = listaCaronas.Where(le => le.enderecoPartidaCidade.ToUpper().Contains(cidadeUf[0].ToUpper().Trim()) && le.enderecoPartidaUF.ToUpper().Contains(cidadeUf[1].ToUpper().Trim())).ToList();
+                }
+
+                if (!string.IsNullOrWhiteSpace(dataPartida))
+                    listaCaronas = listaCaronas.Where(le => le.dataHoraPartida.Value == Convert.ToDateTime(dataPartida.Trim())).ToList();
+
+                if (!string.IsNullOrWhiteSpace(valorInicial))
+                    listaCaronas = listaCaronas.Where(le => le.valorParticipacao >= Convert.ToDecimal(valorInicial.Trim())).ToList();
+
+                if (!string.IsNullOrWhiteSpace(valorFinal))
+                    listaCaronas = listaCaronas.Where(le => le.valorParticipacao <= Convert.ToDecimal(valorFinal.Trim())).ToList();
+
+                if (!string.IsNullOrWhiteSpace(vagasDisponiveis))
+                    listaCaronas = listaCaronas.Where(le => le.quantidadeVagasDisponiveis >= Convert.ToDecimal(vagasDisponiveis.Trim())).ToList();
+
+                return Request.CreateResponse(HttpStatusCode.OK, listaCaronas);
             }
             catch (Exception Ex)
             {
@@ -167,8 +189,8 @@ namespace Rodar.Service.Controllers
                 var listaEventos = appEventoCarona
                     .BuscarTodos()
                     .Select(eventoCarona => EventoCarona.EntityToModel(eventoCarona))
-                    .Where(le => le.idUsuarioMotorista == LoggedUserInformation.userId
-                    || (le.Passageiros != null ? le.Passageiros.Exists(p => p.idUsuario == LoggedUserInformation.userId) : true)
+                    .Where(le => le.idUsuarioMotorista == LoggedUserInformation.getUserId(User.Identity)
+                    || (le.Passageiros != null ? le.Passageiros.Exists(p => p.idUsuario == LoggedUserInformation.getUserId(User.Identity)) : true)
                     && le.dataHoraPrevisaoChegada >= DateTime.Now)
                     .ToList();
 
@@ -192,8 +214,8 @@ namespace Rodar.Service.Controllers
                 var listaEventos = appEventoCarona
                     .BuscarTodos()
                     .Select(eventoCarona => EventoCarona.EntityToModel(eventoCarona))
-                    .Where(le => le.idUsuarioMotorista == LoggedUserInformation.userId
-                    || (le.Passageiros != null ? le.Passageiros.Exists(p => p.idUsuario == LoggedUserInformation.userId) : true)
+                    .Where(le => le.idUsuarioMotorista == LoggedUserInformation.getUserId(User.Identity)
+                    || (le.Passageiros != null ? le.Passageiros.Exists(p => p.idUsuario == LoggedUserInformation.getUserId(User.Identity)) : true)
                     && le.dataHoraPrevisaoChegada <= DateTime.Now)
                     .ToList();
 
@@ -214,7 +236,7 @@ namespace Rodar.Service.Controllers
                 var appEventoCaronaPassageiro = new bllEventoCaronaPassageiro(DBRepository.GetEventoCaronaPassageiroRepository());
                 var eventoCaronaModel = new EventoCaronaPassageiro();
 
-                eventoCaronaModel.idUsuarioPassageiro = LoggedUserInformation.userId;
+                eventoCaronaModel.idUsuarioPassageiro = LoggedUserInformation.getUserId(User.Identity);
                 eventoCaronaModel.idEventoCarona = idEventoCarona;
 
                 appEventoCaronaPassageiro.Cadastrar(EventoCaronaPassageiro.ModelToEntity(eventoCaronaModel));
@@ -235,7 +257,7 @@ namespace Rodar.Service.Controllers
             {
                 var appEventoCaronaPassageiro = new bllEventoCaronaPassageiro(DBRepository.GetEventoCaronaPassageiroRepository());
 
-                return Request.CreateResponse(HttpStatusCode.OK, appEventoCaronaPassageiro.Excluir(idEventoCarona, LoggedUserInformation.userId));
+                return Request.CreateResponse(HttpStatusCode.OK, appEventoCaronaPassageiro.Excluir(idEventoCarona, LoggedUserInformation.getUserId(User.Identity)));
             }
             catch (Exception Ex)
             {
@@ -254,7 +276,7 @@ namespace Rodar.Service.Controllers
 
                 var avaliacaoCaronaModel = new AvaliacaoCarona();
 
-                avaliacaoCaronaModel.idUsuarioAvaliador = LoggedUserInformation.userId;
+                avaliacaoCaronaModel.idUsuarioAvaliador = LoggedUserInformation.getUserId(User.Identity);
                 avaliacaoCaronaModel.idUsuarioAvaliado = appEventoCarona.Buscar(avaliacaoCarona.idEventoCarona).idUsuarioMotorista;
                 avaliacaoCaronaModel.Avaliacao = avaliacaoCarona.Avaliacao;
                 avaliacaoCaronaModel.idEventoCarona = avaliacaoCarona.idEventoCarona;
@@ -271,15 +293,14 @@ namespace Rodar.Service.Controllers
         }
 
         [HttpPost]
-        [ActionName("EnviarMensagemUsuarioCarona")]
-        public HttpResponseMessage EnviarMensagemUsuarioCarona([System.Web.Http.FromBody] ChatUsuarioEventoCarona chatUsuarioEventoCarona)
+        [ActionName("EnviarMensagem")]
+        public HttpResponseMessage EnviarMensagem([System.Web.Http.FromBody] ChatUsuarioEventoCarona chatUsuarioEventoCarona)
         {
             try
             {
                 var appChatUusuarioEventoCarona = new bllChatUsuarioEventoCarona(DBRepository.GetChatUsuarioEventoCaronaRepository());
 
-                chatUsuarioEventoCarona.idUsuarioOrigem = LoggedUserInformation.userId;
-
+                chatUsuarioEventoCarona.idUsuarioOrigem = LoggedUserInformation.getUserId(User.Identity);
                 appChatUusuarioEventoCarona.Cadastrar(ChatUsuarioEventoCarona.ModelToEntity(chatUsuarioEventoCarona));
 
                 return Request.CreateResponse(HttpStatusCode.OK, chatUsuarioEventoCarona);
@@ -291,8 +312,8 @@ namespace Rodar.Service.Controllers
         }
 
         [HttpGet]
-        [ActionName("BuscarMensagensEnviadasUsuario")]
-        public HttpResponseMessage BuscarMensagensUsuario()
+        [ActionName("BuscarMensagensUsuario")]
+        public HttpResponseMessage BuscarMensagensUsuario(int idEventoCarona)
         {
             try
             {
@@ -300,10 +321,56 @@ namespace Rodar.Service.Controllers
 
                 var listaMensagens = appChatUusuarioEventoCarona
                     .BuscarTodos()
-                    ?.Where(chat => chat.idUsuarioOrigem == LoggedUserInformation.userId)
+                    ?.Where(chat => (chat.idUsuarioOrigem == LoggedUserInformation.getUserId(User.Identity) 
+                            || chat.idUsuarioDestino == LoggedUserInformation.getUserId(User.Identity))
+                            && chat.idEventoCarona == idEventoCarona)
                     .Select(chatUsuarioEventoCarona => ChatUsuarioEventoCarona.EntityToModel(chatUsuarioEventoCarona));
 
                 return Request.CreateResponse(HttpStatusCode.OK, listaMensagens);
+            }
+            catch (Exception Ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, Ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [ActionName("BuscarCabecalhoMensagensUsuario")]
+        public HttpResponseMessage BuscarCabecalhoMensagensEnviadasUsuario()
+        {
+            try
+            {
+                var appChatUusuarioEventoCarona = new bllChatUsuarioEventoCarona(DBRepository.GetChatUsuarioEventoCaronaRepository());
+
+                var listaMensagens = appChatUusuarioEventoCarona
+                    .BuscarCabecalhoMensagensPorUsuario(LoggedUserInformation.getUserId(User.Identity))
+                    .Select(chatUsuarioEventoCarona => ChatUsuarioEventoCarona.EntityToModel(chatUsuarioEventoCarona))
+                    .ToList();
+
+                return Request.CreateResponse(HttpStatusCode.OK, listaMensagens);
+            }
+            catch (Exception Ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, Ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [ActionName("BuscarListaCidadeUfsExistentesEmEventoCarona")]
+        [ScriptMethod(ResponseFormat = ResponseFormat.Json)]
+        public HttpResponseMessage BuscarListaCidadeUfsExistentesEmEventoCarona()
+        {
+            try
+            {
+                bllEventoCarona appEventoCarona = new bllEventoCarona(DBRepository.GetEventoCaronaRepository());
+
+                var listaCidadesUfs = appEventoCarona
+                    .BuscarTodos()
+                    .Select(eventoCarona => String.Concat(eventoCarona.enderecoPartidaCidade, ", ", eventoCarona.enderecoPartidaUF))
+                    .Distinct()
+                    .ToList();
+
+                return Request.CreateResponse(HttpStatusCode.OK, listaCidadesUfs);
             }
             catch (Exception Ex)
             {

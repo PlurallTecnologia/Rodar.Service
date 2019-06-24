@@ -11,5 +11,6 @@ namespace Rodar.Domain.Repository
     {
         int Cadastrar(ChatUsuarioEventoTransporte chatUsuarioEventoTransporte);
         List<ChatUsuarioEventoTransporte> BuscarTodos();
+        List<ChatUsuarioEventoTransporte> BuscarCabecalhoMensagensPorUsuario(int idUsuario);
     }
 }

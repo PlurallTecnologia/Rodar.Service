@@ -1,4 +1,5 @@
 ﻿using Rodar.Business;
+using Rodar.Service.Globals;
 using Rodar.Service.Providers;
 using System;
 using System.Collections.Generic;
@@ -75,7 +76,7 @@ namespace Rodar.Service.Models
                 urlImagem5 = evento.urlImagem5,
                 urlImagemCapa = evento.urlImagemCapa,
 
-                Favorito = appEventoFavorito.ExisteFavorito(evento.idEvento, Globals.LoggedUserInformation.userId)
+                Favorito = appEventoFavorito.ExisteFavorito(evento.idEvento, evento.idUsuarioCriacao)
             };
         }
 

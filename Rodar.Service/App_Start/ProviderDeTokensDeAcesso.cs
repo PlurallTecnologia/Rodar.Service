@@ -1,13 +1,8 @@
 ﻿using Microsoft.Owin.Security.OAuth;
-using Rodar.Service.Controllers;
-using Rodar.Service.Globals;
 using Rodar.Service.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using System.Web;
+//using  AspNet.Identity.Owin
 
 namespace Rodar.Service.App_Start
 {
@@ -35,8 +30,6 @@ namespace Rodar.Service.App_Start
                 identity.AddClaim(new Claim("sub", context.UserName));
                 identity.AddClaim(new Claim("role", "user"));
                 identity.AddClaim(new Claim(ClaimTypes.Name, context.UserName));
-
-                //LoggedUserInformation.userEmail = context.UserName;
 
                 context.Validated(identity);
             }

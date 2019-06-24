@@ -409,7 +409,7 @@ namespace TestApi
                 client.DefaultRequestHeaders.Authorization =
                     new AuthenticationHeaderValue("Bearer", Authentication.access_token);
 
-                var response = client.DeleteAsync("api/EventoCarona/Excluir/1").Result;
+                var response = client.DeleteAsync("api/EventoCarona/Excluir?idEventoCarona=12").Result;
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -439,7 +439,7 @@ namespace TestApi
                 client.DefaultRequestHeaders.Authorization =
                     new AuthenticationHeaderValue("Bearer", Authentication.access_token);
 
-                var response = client.DeleteAsync("api/EventoTransporte/Excluir/1").Result;
+                var response = client.DeleteAsync("api/EventoTransporte/Excluir?idEventoTransporte=11").Result;
 
                 if (response.IsSuccessStatusCode)
                 {

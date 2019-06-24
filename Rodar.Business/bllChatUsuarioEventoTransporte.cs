@@ -36,5 +36,17 @@ namespace Rodar.Business
                 throw;
             }
         }
+
+        public List<ChatUsuarioEventoTransporte> BuscarCabecalhoMensagensPorUsuario(int idUsuario)
+        {
+            try
+            {
+                return _chatUsuarioEventoTransporteRepository.BuscarCabecalhoMensagensPorUsuario(idUsuario);
+            }
+            catch
+            {
+                throw;
+            }
+        }
     }
 }

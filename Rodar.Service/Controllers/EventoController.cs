@@ -3,6 +3,7 @@ using Rodar.Service.Globals;
 using Rodar.Service.Models;
 using Rodar.Service.Providers;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
@@ -24,11 +25,10 @@ namespace Rodar.Service.Controllers
             try
             {
                 var appEvento = new bllEvento(DBRepository.GetEventoRepository());
-                evento.idUsuarioCriacao = LoggedUserInformation.userId;
 
-                appEvento.Cadastrar(Evento.ModelToEntity(evento));
+                evento.idUsuarioCriacao = LoggedUserInformation.getUserId(User.Identity);
 
-                return Request.CreateResponse(HttpStatusCode.OK, evento);
+                return Request.CreateResponse(HttpStatusCode.OK, appEvento.Cadastrar(Evento.ModelToEntity(evento)));
             }
             catch (Exception Ex)
             {
@@ -100,7 +100,7 @@ namespace Rodar.Service.Controllers
                 var appEvento = new bllEvento(DBRepository.GetEventoRepository());
                 var appEventoFavorito = new bllEventoUsuarioFavorito(DBRepository.GetEventoUsuarioFavoritoRepository());
 
-                var idUsuario = (somenteMeusEventos ? Globals.LoggedUserInformation.userId : 0);
+                var idUsuario = (somenteMeusEventos ? LoggedUserInformation.getUserId(User.Identity) : 0);
                 var listaEventos = appEvento
                     .BuscarPorUsuario(idUsuario)
                     ?.Select(evento => Evento.EntityToModel(evento))
@@ -150,6 +150,77 @@ namespace Rodar.Service.Controllers
             {
                 return Request.CreateResponse(HttpStatusCode.BadRequest, Ex.Message);
             }
+        }
+
+        [HttpPost]
+        [ActionName("EnviarFoto")]
+        public HttpResponseMessage EnviarFoto(int idEvento)
+        {
+            Dictionary<string, object> dictionaryErros = new Dictionary<string, object>();
+
+            var fileLog = HttpContext.Current.Server.MapPath("~/Log/Log.txt");
+            //File.AppendAllText(fileLog, $"MediaType: {Request.Content.Headers.ContentType.MediaType}");
+
+            if (!Request.Content.IsMimeMultipartContent("form-data"))
+                return Request.CreateResponse(HttpStatusCode.InternalServerError);
+
+            try
+            {
+                var httpRequest = HttpContext.Current.Request;
+
+                foreach (string file in httpRequest.Files)
+                {
+                    HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.Created);
+
+                    var postedFile = httpRequest.Files[file];
+                    if (postedFile != null && postedFile.ContentLength > 0)
+                    {
+                        int MaxContentLength = 1024 * 1024 * 1; //Size = 1 MB  
+
+                        IList<string> AllowedFileExtensions = new List<string> { ".jpg", ".jpeg", ".gif", ".png", "bmp" };
+                        var ext = postedFile.FileName.Substring(postedFile.FileName.LastIndexOf('.'));
+                        var extension = ext.ToLower();
+
+                        if (!AllowedFileExtensions.Contains(extension))
+                        {
+                            var message = string.Format("Por favor envie imagens com o formato .jpg, .jpeg, .gif, .png, .bmp");
+
+                            dictionaryErros.Add("Erro", message);
+                            return Request.CreateResponse(HttpStatusCode.BadRequest, dictionaryErros);
+                        }
+                        else if (postedFile.ContentLength > MaxContentLength)
+                        {
+                            var message = string.Format("Please Upload a file upto 1 mb.");
+                            dictionaryErros.Add("Erro", message);
+                            return Request.CreateResponse(HttpStatusCode.BadRequest, dictionaryErros);
+                        }
+                        else
+                        {
+                            var fileExtension = Path.GetExtension(postedFile.FileName);
+                            var urlImagemEvento = $"evento_{idEvento}{fileExtension}";
+
+                            var filePath = HttpContext.Current.Server.MapPath($"~/EventImages/{urlImagemEvento}");
+
+                            if (File.Exists(filePath))
+                                File.Delete(filePath);
+
+                            postedFile.SaveAs(filePath);
+
+                            var appEvento = new bllEvento(DBRepository.GetEventoRepository());
+                            var evento = appEvento.Buscar(idEvento);
+                            evento.urlImagemCapa = urlImagemEvento;
+                            appEvento.Atualizar(evento);
+                        }
+                    }
+                }
+            }
+            catch (Exception Ex)
+            {
+                File.AppendAllText(fileLog, $"Erro enviar foto evento: {Ex.Message}");
+                return Request.CreateResponse(HttpStatusCode.BadRequest, $"Erro enviar foto evento: {Ex.Message}");
+            }
+
+            return Request.CreateResponse(HttpStatusCode.Created, "Imagens enviadas com sucesso"); ;
         }
     }
 }

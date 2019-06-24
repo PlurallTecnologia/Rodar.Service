@@ -29,8 +29,8 @@ namespace Rodar.Service.Services
 
                 if (drSelecao.Read())
                 {
-                    LoggedUserInformation.userId = Convert.ToInt32(drSelecao["idUsuario"].ToString());
-                    LoggedUserInformation.userEmail = login.Trim();
+                    //LoggedUserInformation.getUserId(User.Identity) = Convert.ToInt32(drSelecao["idUsuario"].ToString());
+                    //LoggedUserInformation.userEmail = login.Trim();
                     return true;
                 }
             }

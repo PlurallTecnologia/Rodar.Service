@@ -18,15 +18,13 @@ namespace Rodar.Repository.SqlServer
             using (SqlConnection con = Database.GetCurrentDbConnection())
             {
                 string stringSQL = @"INSERT INTO ChatUsuarioEventoTransporte
-                                                        (idChatUsuarioEventoTransporte
-                                                        ,idEventoTransporte
+                                                        (idEventoTransporte
                                                         ,dataHoraInclusaoMensagem
                                                         ,idUsuarioOrigem
                                                         ,idUsuarioDestino
                                                         ,Mensagem)
                                                     VALUES
-                                                        (@idChatUsuarioEventoTransporte
-                                                        ,@idEventoTransporte
+                                                        (@idEventoTransporte
                                                         ,GETDATE()
                                                         ,@idUsuarioOrigem
                                                         ,@idUsuarioDestino
@@ -73,6 +71,56 @@ namespace Rodar.Repository.SqlServer
                                         FROM ChatUsuarioEventoTransporte";
 
                 SqlCommand cmdSelecionar = new SqlCommand(stringSQL, con);
+
+                try
+                {
+                    con.Open();
+                    SqlDataReader drSelecao = cmdSelecionar.ExecuteReader();
+
+                    if (drSelecao.HasRows)
+                        listaMensagens = new List<ChatUsuarioEventoTransporte>();
+
+                    while (drSelecao.Read())
+                    {
+                        var chatUsuarioEventoTransporte = new ChatUsuarioEventoTransporte();
+                        PreencheCampos(drSelecao, ref chatUsuarioEventoTransporte);
+                        listaMensagens.Add(chatUsuarioEventoTransporte);
+                    }
+
+                    return listaMensagens;
+                }
+                catch
+                {
+                    throw;
+                }
+                finally
+                {
+                    con.Close();
+                }
+            }
+        }
+
+        public List<ChatUsuarioEventoTransporte> BuscarCabecalhoMensagensPorUsuario(int idUsuario)
+        {
+            List<ChatUsuarioEventoTransporte> listaMensagens = null;
+
+            using (SqlConnection con = Database.GetCurrentDbConnection())
+            {
+                string stringSQL = @"SELECT
+	                                    DISTINCT idEventoTransporte, 
+	                                    MAX(dataHoraInclusaoMensagem) AS dataHoraInclusaoMensagem,
+	                                    0 AS idChatUsuarioEventoTransporte, 
+	                                    0 AS idUsuarioOrigem, 
+	                                    0 AS idUsuarioDestino,
+	                                    '' AS Mensagem
+                                    FROM ChatUsuarioEventoTransporte
+                                    WHERE idUsuarioDestino = @idUsuario
+                                    OR	idUsuarioOrigem = @idUsuario
+                                    GROUP BY idEventoTransporte";
+
+                SqlCommand cmdSelecionar = new SqlCommand(stringSQL, con);
+
+                cmdSelecionar.Parameters.Add("idUsuario", SqlDbType.Int).Value = idUsuario;
 
                 try
                 {

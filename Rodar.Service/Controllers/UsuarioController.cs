@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Security.Claims;
 using System.Web;
 using System.Web.Http;
 
@@ -60,7 +61,7 @@ namespace Rodar.Service.Controllers
             {
                 bllUsuario appUsuario = new bllUsuario(DBRepository.GetUsuarioRepository());
 
-                appUsuario.PromoverParaTransportador(LoggedUserInformation.userId);
+                appUsuario.PromoverParaTransportador(LoggedUserInformation.getUserId(User.Identity));
 
                 return Request.CreateResponse(HttpStatusCode.OK);
             }
@@ -78,7 +79,7 @@ namespace Rodar.Service.Controllers
             {
                 bllUsuario appUsuario = new bllUsuario(DBRepository.GetUsuarioRepository());
 
-                appUsuario.PromoverParaOrganizadorEvento(LoggedUserInformation.userId);
+                appUsuario.PromoverParaOrganizadorEvento(LoggedUserInformation.getUserId(User.Identity));
 
                 return Request.CreateResponse(HttpStatusCode.OK);
             }
@@ -96,8 +97,11 @@ namespace Rodar.Service.Controllers
             {
                 bllUsuario appUsuario = new bllUsuario(DBRepository.GetUsuarioRepository());
 
+                var identity = (ClaimsIdentity)User.Identity;
+                var teste = identity.Name;
+
                 //return Request.CreateResponse(HttpStatusCode.OK, Usuario.EntityToModel(appUsuario.bus BuscarPorEmail(LoggedUserInformation.userEmail)));
-                return Request.CreateResponse(HttpStatusCode.OK, Usuario.EntityToModel(appUsuario.BuscarPorId(LoggedUserInformation.userId)));
+                return Request.CreateResponse(HttpStatusCode.OK, Usuario.EntityToModel(appUsuario.BuscarPorId(LoggedUserInformation.getUserId(User.Identity))));
             }
             catch (Exception Ex)
             {
@@ -113,7 +117,7 @@ namespace Rodar.Service.Controllers
         {
             Dictionary<string, object> dictionaryErros = new Dictionary<string, object>();
 
-            //var fileLog = HttpContext.Current.Server.MapPath("~/Log/Log.txt");
+            var fileLog = HttpContext.Current.Server.MapPath("~/Log/Log.txt");
             //File.AppendAllText(fileLog, $"MediaType: {Request.Content.Headers.ContentType.MediaType}");
 
             if (!Request.Content.IsMimeMultipartContent("form-data"))
@@ -132,13 +136,13 @@ namespace Rodar.Service.Controllers
                     {
                         int MaxContentLength = 1024 * 1024 * 1; //Size = 1 MB  
 
-                        IList<string> AllowedFileExtensions = new List<string> { ".jpg", ".gif", ".png", "bmp" };
+                        IList<string> AllowedFileExtensions = new List<string> { ".jpg", ".jpeg", ".gif", ".png", "bmp" };
                         var ext = postedFile.FileName.Substring(postedFile.FileName.LastIndexOf('.'));
                         var extension = ext.ToLower();
 
                         if (!AllowedFileExtensions.Contains(extension))
                         {
-                            var message = string.Format("Por favor envie imagens com o formato .jpg, .gif, .png, .bmp");
+                            var message = string.Format("Por favor envie imagens com o formato .jpg, .jpeg, .gif, .png, .bmp");
 
                             dictionaryErros.Add("Erro", message);
                             return Request.CreateResponse(HttpStatusCode.BadRequest, dictionaryErros);
@@ -152,7 +156,7 @@ namespace Rodar.Service.Controllers
                         else
                         {
                             var fileExtension = Path.GetExtension(postedFile.FileName);
-                            var urlImagemSelfie = $"selfie_{LoggedUserInformation.userId}{fileExtension}";
+                            var urlImagemSelfie = $"selfie_{LoggedUserInformation.getUserId(User.Identity)}{fileExtension}";
 
                             var filePath = HttpContext.Current.Server.MapPath($"~/Userimages/{urlImagemSelfie}");
 
@@ -162,7 +166,7 @@ namespace Rodar.Service.Controllers
                             postedFile.SaveAs(filePath);
 
                             var appUsuario = new bllUsuario(DBRepository.GetUsuarioRepository());
-                            var usuario = appUsuario.BuscarPorId(LoggedUserInformation.userId);
+                            var usuario = appUsuario.BuscarPorId(LoggedUserInformation.getUserId(User.Identity));
                             usuario.urlImagemSelfie = urlImagemSelfie;
                             appUsuario.Atualizar(usuario);
                         }
@@ -171,7 +175,8 @@ namespace Rodar.Service.Controllers
             }
             catch (Exception Ex)
             {
-                //File.AppendAllText(fileLog, $"{Ex.Message}");
+                File.AppendAllText(fileLog, $"Erro enviar foto do usuário: {Ex.Message}");
+                return Request.CreateResponse(HttpStatusCode.BadRequest, $"Erro enviar foto evento: {Ex.Message}");
             }
 
             return Request.CreateResponse(HttpStatusCode.Created, "Imagens enviadas com sucesso"); ;
@@ -185,7 +190,7 @@ namespace Rodar.Service.Controllers
             {
                 bllUsuario appUsuario = new bllUsuario(DBRepository.GetUsuarioRepository());
 
-                appUsuario.AtualizarTokenNotificacao(LoggedUserInformation.userId, novoTokenNotificacao);
+                appUsuario.AtualizarTokenNotificacao(LoggedUserInformation.getUserId(User.Identity), novoTokenNotificacao);
 
                 return Request.CreateResponse(HttpStatusCode.OK);
             }
