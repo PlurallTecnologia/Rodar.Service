@@ -117,7 +117,7 @@ namespace Rodar.Service.Controllers
         {
             Dictionary<string, object> dictionaryErros = new Dictionary<string, object>();
 
-            var fileLog = HttpContext.Current.Server.MapPath("~/Log/Log.txt");
+            //var fileLog = HttpContext.Current.Server.MapPath("~/Log/Log.txt");
             //File.AppendAllText(fileLog, $"MediaType: {Request.Content.Headers.ContentType.MediaType}");
 
             if (!Request.Content.IsMimeMultipartContent("form-data"))
@@ -158,7 +158,7 @@ namespace Rodar.Service.Controllers
                             var fileExtension = Path.GetExtension(postedFile.FileName);
                             var urlImagemSelfie = $"selfie_{LoggedUserInformation.getUserId(User.Identity)}{fileExtension}";
 
-                            var filePath = HttpContext.Current.Server.MapPath($"~/Userimages/{urlImagemSelfie}");
+                            var filePath = HttpContext.Current.Server.MapPath($"~/{urlImagemSelfie}");
 
                             if (File.Exists(filePath))
                                 File.Delete(filePath);
@@ -175,7 +175,7 @@ namespace Rodar.Service.Controllers
             }
             catch (Exception Ex)
             {
-                File.AppendAllText(fileLog, $"Erro enviar foto do usuário: {Ex.Message}");
+                //File.AppendAllText(fileLog, $"Erro enviar foto do usuário: {Ex.Message}");
                 return Request.CreateResponse(HttpStatusCode.BadRequest, $"Erro enviar foto evento: {Ex.Message}");
             }
 
