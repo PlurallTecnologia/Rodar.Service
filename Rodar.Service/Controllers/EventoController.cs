@@ -24,11 +24,17 @@ namespace Rodar.Service.Controllers
         {
             try
             {
+                var fileLog = HttpContext.Current.Server.MapPath("~/Log/Log.txt");
+                File.AppendAllText(fileLog, evento.enderecoNumero.ToString());
+
                 var appEvento = new bllEvento(DBRepository.GetEventoRepository());
 
                 evento.idUsuarioCriacao = LoggedUserInformation.getUserId(User.Identity);
+                Domain.Entity.Evento eventoEntity = Evento.ModelToEntity(evento);
 
-                return Request.CreateResponse(HttpStatusCode.OK, appEvento.Cadastrar(Evento.ModelToEntity(evento)));
+                File.AppendAllText(fileLog, eventoEntity.enderecoNumero.ToString());
+
+                return Request.CreateResponse(HttpStatusCode.OK, appEvento.Cadastrar(eventoEntity));
             }
             catch (Exception Ex)
             {
@@ -62,7 +68,7 @@ namespace Rodar.Service.Controllers
             {
                 var appEvento = new bllEvento(DBRepository.GetEventoRepository());
                 
-                return Request.CreateResponse(HttpStatusCode.OK, Evento.EntityToModel(appEvento.Buscar(idEvento)));
+                return Request.CreateResponse(HttpStatusCode.OK, Evento.EntityToModel(appEvento.Buscar(idEvento), LoggedUserInformation.getUserId(User.Identity)));
             }
             catch (Exception Ex)
             {
@@ -103,7 +109,7 @@ namespace Rodar.Service.Controllers
                 var idUsuario = (somenteMeusEventos ? LoggedUserInformation.getUserId(User.Identity) : 0);
                 var listaEventos = appEvento
                     .BuscarPorUsuario(idUsuario)
-                    ?.Select(evento => Evento.EntityToModel(evento))
+                    ?.Select(evento => Evento.EntityToModel(evento, LoggedUserInformation.getUserId(User.Identity)))
                     .ToList();
 
                 if (!string.IsNullOrWhiteSpace(nomeEvento))

@@ -143,9 +143,9 @@ namespace TestApi
 
                 List<KeyValuePair<string, string>> pairs = new List<KeyValuePair<string, string>>();
                 
-                pairs.Add(new KeyValuePair<string, string>("username", "3@3.com.br"));
+                pairs.Add(new KeyValuePair<string, string>("username", "organizador@gmail.com"));
                 //pairs.Add(new KeyValuePair<string, string>("username", "123456789"));
-                pairs.Add(new KeyValuePair<string, string>("password", "3"));
+                pairs.Add(new KeyValuePair<string, string>("password", "1"));
                 pairs.Add(new KeyValuePair<string, string>("grant_type", "password"));
 
                 FormUrlEncodedContent content = new FormUrlEncodedContent(pairs);
@@ -260,7 +260,7 @@ namespace TestApi
                 client.DefaultRequestHeaders.Authorization =
                     new AuthenticationHeaderValue("Bearer", Authentication.access_token);
 
-                var response = client.GetAsync("api/Evento/BuscarTodos?somenteMeusEventos=false&somenteMeusFavoritos=false&nomeEvento=uva").Result;
+                var response = client.GetAsync("api/Evento/BuscarTodos?somenteMeusEventos=false&somenteMeusFavoritos=false").Result;
                 //var response = client.GetAsync("api/Evento/BuscarTodos?somenteMeusEventos=false&somenteMeusFavoritos=false&nomeEvento=uva&cidadeUfEvento=Caxias do Sul,RS&dataInicial=07/06/2019 00:00:00.000&dataFinal=07/06/2019 23:59:59.999").Result;
 
                 if (response.IsSuccessStatusCode)

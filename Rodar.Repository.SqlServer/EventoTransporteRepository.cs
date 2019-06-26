@@ -28,7 +28,8 @@ namespace Rodar.Repository.SqlServer
                                                 ,valorParticipacao
                                                 ,dataHoraPartida
                                                 ,dataHoraPrevisaoChegada
-                                                ,Mensagem)
+                                                ,Mensagem
+                                                ,nomeTransporte)
                                             VALUES
                                                 (@idEvento
                                                 ,@idUsuarioTransportador
@@ -43,7 +44,8 @@ namespace Rodar.Repository.SqlServer
                                                 ,@valorParticipacao
                                                 ,@dataHoraPartida
                                                 ,@dataHoraPrevisaoChegada
-                                                ,@Mensagem);
+                                                ,@Mensagem
+                                                ,@nomeTransporte);
                                                 SET @idEventoTransporte = SCOPE_IDENTITY()";
 
                 SqlCommand cmdInserir = new SqlCommand(stringSQL, con);
@@ -78,6 +80,7 @@ namespace Rodar.Repository.SqlServer
                     cmdInserir.Parameters.Add("dataHoraPrevisaoChegada", SqlDbType.DateTime).Value = eventoTransporte.dataHoraPrevisaoChegada;
 
                 cmdInserir.Parameters.Add("Mensagem", SqlDbType.VarChar).Value = eventoTransporte.Mensagem;
+                cmdInserir.Parameters.Add("nomeTransporte", SqlDbType.VarChar).Value = eventoTransporte.nomeTransporte;
 
                 try
                 {
@@ -102,20 +105,21 @@ namespace Rodar.Repository.SqlServer
             using (var con = Database.GetCurrentDbConnection())
             {
                 string stringSQL = @"UPDATE EventoTransporte
-                                       SET idEvento = idEvento
-                                          ,idUsuarioMotorista = idUsuarioMotorista
-                                          ,quantidadeVagas = quantidadeVagas
-                                          ,enderecoPartidaRua = enderecoPartidaRua
-                                          ,enderecoPartidaComplemento = enderecoPartidaComplemento
-                                          ,enderecoPartidaBairro = enderecoPartidaBairro
-                                          ,enderecoPartidaNumero = enderecoPartidaNumero
-                                          ,enderecoPartidaCEP = enderecoPartidaCEP
-                                          ,enderecoPartidaCidade = enderecoPartidaCidade
-                                          ,enderecoPartidaUF = enderecoPartidaUF
-                                          ,valorParticipacao = valorParticipacao
+                                       SET idEvento = @idEvento
+                                          ,idUsuarioMotorista = @idUsuarioMotorista
+                                          ,quantidadeVagas = @quantidadeVagas
+                                          ,enderecoPartidaRua = @enderecoPartidaRua
+                                          ,enderecoPartidaComplemento = @enderecoPartidaComplemento
+                                          ,enderecoPartidaBairro = @enderecoPartidaBairro
+                                          ,enderecoPartidaNumero = @enderecoPartidaNumero
+                                          ,enderecoPartidaCEP = @enderecoPartidaCEP
+                                          ,enderecoPartidaCidade = @enderecoPartidaCidade
+                                          ,enderecoPartidaUF = @enderecoPartidaUF
+                                          ,valorParticipacao = @valorParticipacao
                                           ,dataHoraPartida = @dataHoraPartida
                                           ,dataHoraPrevisaoChegada = @dataHoraPrevisaoChegada
-                                          ,Mensagem = Mensagem
+                                          ,Mensagem = @Mensagem
+                                          ,nomeTransporte = @nomeTransporte
                                      WHERE idEvento = @idEvento";
 
                 SqlCommand cmdAtualizar = new SqlCommand(stringSQL, con);
@@ -149,6 +153,7 @@ namespace Rodar.Repository.SqlServer
                     cmdAtualizar.Parameters.Add("dataHoraPrevisaoChegada", SqlDbType.DateTime).Value = eventoTransporte.dataHoraPrevisaoChegada;
 
                 cmdAtualizar.Parameters.Add("Mensagem", SqlDbType.VarChar).Value = eventoTransporte.Mensagem;
+                cmdAtualizar.Parameters.Add("nomeTransporte", SqlDbType.VarChar).Value = eventoTransporte.nomeTransporte;
 
                 try
                 {
@@ -366,6 +371,9 @@ namespace Rodar.Repository.SqlServer
 
             if (drSelecao["Mensagem"] != DBNull.Value)
                 eventoTransporte.Mensagem = drSelecao["Mensagem"].ToString();
+
+            if (drSelecao["nomeTransporte"] != DBNull.Value)
+                eventoTransporte.nomeTransporte = drSelecao["nomeTransporte"].ToString();
         }
 
         private static void ValidaCampos(ref EventoTransporte eventoTransporte)

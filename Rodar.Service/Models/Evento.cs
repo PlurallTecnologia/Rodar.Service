@@ -39,7 +39,7 @@ namespace Rodar.Service.Models
 
         public bool Favorito { get; set; }
 
-        public static Evento EntityToModel(Domain.Entity.Evento evento)
+        public static Evento EntityToModel(Domain.Entity.Evento evento, int usuarioFavorito)
         {
             if (evento == null)
                 return null;
@@ -76,7 +76,7 @@ namespace Rodar.Service.Models
                 urlImagem5 = evento.urlImagem5,
                 urlImagemCapa = evento.urlImagemCapa,
 
-                Favorito = appEventoFavorito.ExisteFavorito(evento.idEvento, evento.idUsuarioCriacao)
+                Favorito = appEventoFavorito.ExisteFavorito(evento.idEvento, usuarioFavorito)
             };
         }
 

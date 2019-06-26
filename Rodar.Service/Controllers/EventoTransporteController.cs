@@ -277,7 +277,7 @@ namespace Rodar.Service.Controllers
             {
                 var appChatUusuarioEventoTransporte = new bllChatUsuarioEventoTransporte(DBRepository.GetChatUsuarioEventoTransporteRepository());
 
-                chatUsuarioEventoTransporte.idUsuarioOrigem = LoggedUserInformation.getUserId(User.Identity);
+                chatUsuarioEventoTransporte.idUsuarioDestino = LoggedUserInformation.getUserId(User.Identity);
                 appChatUusuarioEventoTransporte.Cadastrar(ChatUsuarioEventoTransporte.ModelToEntity(chatUsuarioEventoTransporte));
 
                 return Request.CreateResponse(HttpStatusCode.OK, chatUsuarioEventoTransporte);

@@ -66,7 +66,7 @@ namespace Rodar.Service.Models
                 idEventoCarona = eventoCarona.idEventoCarona,
 
                 idEvento = eventoCarona.idEvento,
-                Evento = Evento.EntityToModel(appEvento.Buscar(eventoCarona.idEvento)),
+                Evento = Evento.EntityToModel(appEvento.Buscar(eventoCarona.idEvento), eventoCarona.idUsuarioMotorista),
 
                 idUsuarioMotorista = eventoCarona.idUsuarioMotorista,
                 usuarioMotorista = Usuario.EntityToModel(appUsuario.BuscarPorId(eventoCarona.idUsuarioMotorista)),

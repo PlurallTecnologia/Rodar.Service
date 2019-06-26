@@ -111,7 +111,7 @@ namespace Rodar.Repository.SqlServer
 	                                    MAX(dataHoraInclusaoMensagem) AS dataHoraInclusaoMensagem,
 	                                    0 AS idChatUsuarioEventoTransporte, 
 	                                    0 AS idUsuarioOrigem, 
-	                                    0 AS idUsuarioDestino,
+	                                    (SELECT TOP 1 idUsuarioDestino FROM ChatUsuarioEventoTransporte ChatEx WHERE ChatEx.idEventoTransporte = ChatUsuarioEventoTransporte.idEventoTransporte AND (ChatEx.idUsuarioOrigem = @idUsuario OR ChatEx.idUsuarioDestino = @idUsuario) ORDER BY dataHoraInclusaoMensagem ASC) AS idUsuarioDestino,
 	                                    '' AS Mensagem
                                     FROM ChatUsuarioEventoTransporte
                                     WHERE idUsuarioDestino = @idUsuario

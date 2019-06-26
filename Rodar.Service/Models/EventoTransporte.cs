@@ -56,6 +56,7 @@ namespace Rodar.Service.Models
 
             return new EventoTransporte()
             {
+                nomeTransporte = eventoTransporte.nomeTransporte,
                 enderecoPartidaBairro = eventoTransporte.enderecoPartidaBairro,
                 enderecoPartidaCEP = eventoTransporte.enderecoPartidaCEP,
                 enderecoPartidaCidade = eventoTransporte.enderecoPartidaCidade,
@@ -65,7 +66,7 @@ namespace Rodar.Service.Models
                 enderecoPartidaUF = eventoTransporte.enderecoPartidaUF,
 
                 idEvento = eventoTransporte.idEvento,
-                Evento = Evento.EntityToModel(appEvento.Buscar(eventoTransporte.idEvento)),
+                Evento = Evento.EntityToModel(appEvento.Buscar(eventoTransporte.idEvento), eventoTransporte.idUsuarioTransportador),
 
                 idEventoTransporte = eventoTransporte.idEventoTransporte,
 
@@ -92,6 +93,7 @@ namespace Rodar.Service.Models
         {
             return new Domain.Entity.EventoTransporte()
             {
+                nomeTransporte = eventoTransporte.nomeTransporte,
                 enderecoPartidaBairro = eventoTransporte.enderecoPartidaBairro,
                 enderecoPartidaCEP = eventoTransporte.enderecoPartidaCEP,
                 enderecoPartidaCidade = eventoTransporte.enderecoPartidaCidade,

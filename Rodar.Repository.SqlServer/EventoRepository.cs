@@ -72,7 +72,12 @@ namespace Rodar.Repository.SqlServer
                 cmdInserir.Parameters.Add("enderecoRua", SqlDbType.VarChar).Value = evento.enderecoRua;
                 cmdInserir.Parameters.Add("enderecoComplemento", SqlDbType.VarChar).Value = evento.enderecoComplemento;
                 cmdInserir.Parameters.Add("enderecoBairro", SqlDbType.VarChar).Value = evento.enderecoBairro;
-                cmdInserir.Parameters.Add("enderecoNumero", SqlDbType.Int).Value = evento.enderecoNumero;
+
+                if (evento.enderecoNumero == 0)
+                    cmdInserir.Parameters.Add("enderecoNumero", SqlDbType.Int).Value = evento.enderecoNumero;
+                else
+                    cmdInserir.Parameters.Add("enderecoNumero", SqlDbType.Int).Value = DBNull.Value;
+
                 cmdInserir.Parameters.Add("enderecoCEP", SqlDbType.VarChar).Value = evento.enderecoCEP;
                 cmdInserir.Parameters.Add("enderecoCidade", SqlDbType.VarChar).Value = evento.enderecoCidade;
                 cmdInserir.Parameters.Add("enderecoUF", SqlDbType.VarChar).Value = evento.enderecoUF;

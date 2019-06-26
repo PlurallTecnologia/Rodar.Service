@@ -344,7 +344,7 @@ namespace Rodar.Service.Controllers
 
                 var listaMensagens = appChatUusuarioEventoCarona
                     .BuscarCabecalhoMensagensPorUsuario(LoggedUserInformation.getUserId(User.Identity))
-                    .Select(chatUsuarioEventoCarona => ChatUsuarioEventoCarona.EntityToModel(chatUsuarioEventoCarona))
+                    ?.Select(chatUsuarioEventoCarona => ChatUsuarioEventoCarona.EntityToModel(chatUsuarioEventoCarona))
                     .ToList();
 
                 return Request.CreateResponse(HttpStatusCode.OK, listaMensagens);
@@ -366,7 +366,7 @@ namespace Rodar.Service.Controllers
 
                 var listaCidadesUfs = appEventoCarona
                     .BuscarTodos()
-                    .Select(eventoCarona => String.Concat(eventoCarona.enderecoPartidaCidade, ", ", eventoCarona.enderecoPartidaUF))
+                    ?.Select(eventoCarona => String.Concat(eventoCarona.enderecoPartidaCidade, ", ", eventoCarona.enderecoPartidaUF))
                     .Distinct()
                     .ToList();
 
